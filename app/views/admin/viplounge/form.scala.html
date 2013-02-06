@@ -1,0 +1,73 @@
+@(id: Long, vipLoungeForm: Form[models.VipLounge], venues: List[(String,String)])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("vip.lounge"))(Messages("edit")) {
+
+	@if(vipLoungeForm.hasErrors) {
+		<div class="alert-message error">
+			<p><strong>Oops</strong> Please fix all errors</p>
+			<ul>
+				@vipLoungeForm.errors.map { error =>
+					<li>@error.key @error.message</li>
+				}
+			</ul>
+		</div>
+	}
+  
+	@helper.form(action = routes.VipLoungeController.update(id)) {
+   
+        <fieldset>
+            <legend>@Messages("general.information")</legend>
+            
+            @inputText(
+                vipLoungeForm("name"), 
+                '_label -> Messages("name")
+            )
+            
+            @textarea(
+                vipLoungeForm("description"), 
+                '_label -> Messages("description"),
+                'rows -> 10,
+                'cols -> 100
+            )
+            
+            @inputText(
+                vipLoungeForm("seatsNumber"), 
+                '_label -> Messages("vip.lounge.seats")
+            )
+            
+            @inputText(
+                vipLoungeForm("locationCode"), 
+                '_label -> Messages("vip.lounge.location")
+            )
+            
+            @select(
+            	vipLoungeForm("venueId"),
+            	venues,
+            	'_label -> Messages("venue")
+            )
+
+            @checkbox(
+                vipLoungeForm("active"), 
+                '_label -> Messages("active")
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+        	@id match {
+	        	case -1 => {
+	            	<input type="submit" class="btn btn-primary" value="Insert">
+	            }
+	            
+	            case default => {
+	            	<input type="submit" class="btn btn-primary" value="Update">
+	            }
+            }
+           	<a href="@routes.VenueController.list" class="btn">Cancel</a>
+        </div>
+     	    
+	}
+}

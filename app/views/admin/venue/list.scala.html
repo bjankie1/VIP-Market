@@ -1,0 +1,63 @@
+@(venues: List[models.Venue])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+
+@admin.main(Messages("venue"))(Messages("venue.list")) {
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<td>@Messages("name")</td>
+				<td>@Messages("city")</td>
+				<td>@Messages("actions")</td>
+			</tr>
+		</thead>
+	@venues.map { venue =>
+		<tr>
+			<td><a href="@routes.VenueController.edit(venue.id.get)">@venue.name</a></td>
+			<td>@venue.address.city</td>
+			<td>
+				<div class="btn-group">
+					<button class="btn btn-mini"><a href="@routes.VipLoungeController.create(venue.id.get)">@Messages("vip.lounge.create")</a></button>
+					<button class="btn btn-mini"><a href="@routes.VipLoungeController.list(venue.id.get)">@Messages("vip.lounge.list")</a></button>
+					<button class="btn btn-mini"><a data-toggle="modal" href="@routes.VenueController.preview(venue.id.get)" data-target="#venuePreviewModal">@Messages("preview")</a></button>
+				</div>
+			</td>
+		</tr>
+	}
+	</table>
+	 
+	<!-- Preview modal -->
+	<div id="venuePreviewModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">@Messages("preview")</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p>One fine body…</p>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	  </div>
+	</div>
+	<script type="text/javascript">
+	<!--
+	$(function() {
+		$("a[data-target=#venuePreviewModal]").click(function(ev) {
+			ev.preventDefault();
+		    var target = $(source).attr("remote");
+			alert(target)
+		    // load the url and show modal on success
+		    $("#venuePreviewModal .modal-body").load(target, function() { 
+		         $("#venuePreviewModal").modal("show"); 
+		    });
+		}); 
+		$('#venuePreviewModal').on('hidden', function() {
+		    $(this).removeData('modal');
+		});
+ 	})
+	//-->
+	</script>
+	
+}

@@ -1,0 +1,93 @@
+<mockup version="1.0" skin="sketch" measuredW="1340" measuredH="732" mockupW="1340" mockupH="721">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="0" y="11" w="1024" h="721" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//sportsmarket.pl/</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::SubTitle" x="55" y="110" w="-1" h="-1" measuredW="125" measuredH="33" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wyb%F3r%20lo%u017Cy</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::StickyNote" x="1031" y="142" w="309" h="151" measuredW="109" measuredH="123" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Bookowanie%20miejsca%20dla%20okreslonego%20spotkania%2C%20ktore%20jest%20wybierane%20na%20stronie%20glownej%20lub%20podstronie%20wynikow%20wyszukiwania%20spotkan.</text>
+      </controlProperties>
+    </control>
+    <control controlID="9" controlTypeID="com.balsamiq.mockups::TextArea" x="55" y="189" w="474" h="201" measuredW="200" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Opis%20lo%u017Cy%20z%20pe%u0142n%u0105%20informacj%u0105</text>
+      </controlProperties>
+    </control>
+    <control controlID="10" controlTypeID="com.balsamiq.mockups::PointyButton" x="453" y="157" w="-1" h="-1" measuredW="76" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Nast%u0119pna</text>
+      </controlProperties>
+    </control>
+    <control controlID="11" controlTypeID="com.balsamiq.mockups::PointyButton" x="55" y="157" w="-1" h="-1" measuredW="85" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <direction>left</direction>
+        <text>Poprzednia</text>
+      </controlProperties>
+    </control>
+    <control controlID="12" controlTypeID="com.balsamiq.mockups::ComboBox" x="165" y="159" w="273" h="-1" measuredW="136" measuredH="23" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Wyszukiwanie%20lo%u017Cy</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::FieldSet" x="55" y="403" w="474" h="207" measuredW="200" measuredH="170" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Opcje%20dodatkowe</text>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::CheckBoxGroup" x="80" y="428" w="-1" h="-1" measuredW="375" measuredH="84" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>%5B%20%5D%20W%F3dka%20%2810%20butelek%20Wyborowej%29%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%201000PLN%0A%5Bx%5D%20Whiskey%20%285%20butelek%20Chivas%20Raegal%2012yo%29%20%20%20%20%20%20%20%20%20%20%20%20%20%20%202000PLN%0A-%5B%20%5D%20Hostessy%20-%0A-%5B%20%5D%20Poker%20-</text>
+      </controlProperties>
+    </control>
+    <control controlID="16" controlTypeID="com.balsamiq.mockups::TextArea" x="73" y="514" w="438" h="81" measuredW="200" measuredH="140" zOrder="9" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Komentarz%20od%20zamawiaj%u0105cego....</text>
+      </controlProperties>
+    </control>
+    <control controlID="17" controlTypeID="com.balsamiq.mockups::StickyNote" x="1031" y="403" w="309" h="151" measuredW="109" measuredH="123" zOrder="10" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Opcje%20dodatkowe%20przypisane%20sa%20do%20lozy%20i%20zmieniaja%20sie%20wraz%20z%20wyborem%20lozy%0A%20%0ADodatkowy%20opis%20to%20miejsce%20na%20zyczenia%20specjalne%2C%20ktore%20moga%20byc%20dodatkowo%20wycenione%20lub%20odrzucone</text>
+      </controlProperties>
+    </control>
+    <control controlID="18" controlTypeID="com.balsamiq.mockups::Label" x="65" y="625" w="-1" h="-1" measuredW="49" measuredH="26" zOrder="11" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <size>18</size>
+        <text>Cena</text>
+      </controlProperties>
+    </control>
+    <control controlID="19" controlTypeID="com.balsamiq.mockups::StickyNote" x="1031" y="554" w="294" h="114" measuredW="109" measuredH="123" zOrder="12" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Cena%20zmienia%20si%u0119%20dynamicznie%20wraz%20ze%20zmiana%20lozy%20i%20wyborem%20opcji%20dodatkowych</text>
+      </controlProperties>
+    </control>
+    <control controlID="20" controlTypeID="com.balsamiq.mockups::Label" x="226" y="622" w="-1" h="-1" measuredW="135" measuredH="33" zOrder="13" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <color>472931</color>
+        <size>24</size>
+        <text>12%2C000%20PLN</text>
+        <textOrientation>right</textOrientation>
+        <underline>true</underline>
+      </controlProperties>
+    </control>
+    <control controlID="22" controlTypeID="com.balsamiq.mockups::PointyButton" x="407" y="625" w="122" h="-1" measuredW="83" measuredH="27" zOrder="14" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <text>Rezerwuj%u0119</text>
+      </controlProperties>
+    </control>
+    <control controlID="23" controlTypeID="com.balsamiq.mockups::Image" x="548" y="190" w="306" h="200" measuredW="77" measuredH="79" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Umiejscowienie%20lozy%20na%20planie%20obiektu</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>

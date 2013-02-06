@@ -1,0 +1,22 @@
+@(events: List[models.Event])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("event"))("Lista imprez") {
+	<div class="pagination">
+	  <ul>
+	    <li><a href="#">Prev</a></li>
+	    <li><a href="#">1</a></li>
+	    <li><a href="#">2</a></li>
+	    <li><a href="#">3</a></li>
+	    <li><a href="#">4</a></li>
+	    <li><a href="#">Next</a></li>
+	  </ul>
+	</div>
+	<ol>
+	@events.map { event =>
+		<li>@event.name
+	}
+	</ol>
+}

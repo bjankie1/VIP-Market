@@ -1,0 +1,51 @@
+@(vipLounges: List[models.VipLounge])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+<script type="text/javascript">
+function activateVipLounge(url) {
+	$.getJSON(url, function(data) {
+		if(data.status == 'OK') {
+			bootstrapAlert.success("Activated")
+		} else {
+			bootstrapAlert.error("Activated error")
+		}
+	})
+}
+function disactivateVipLounge(url) {
+	$.getJSON(url, function(data) {
+		if(data.status == 'OK') {
+			bootstrapAlert.success("Disactivated")
+		} else {
+			bootstrapAlert.error("Disactivated error")
+		}
+	})
+}
+</script>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<td>@Messages("name")</td>
+			<td>@Messages("vip.lounge.seats")</td>
+			<td>@Messages("actions")</td>
+		</tr>
+	</thead>
+@vipLounges.map { vipLounge =>
+	<tr>
+		<td>
+		@if(!vipLounge.active) {
+		  	<span class="label">Wyłączona</span>
+		}
+		<a href="@routes.VipLoungeController.edit(vipLounge.id.get)">@vipLounge.name</a></td>
+		<td>@vipLounge.seatsNumber</td>
+		<td>
+		@if(vipLounge.active) {
+		  	<a class="btn btn-danger" href="#" onclick="disactivateVipLounge('@routes.VipLoungeController.disactivate(vipLounge.id.get)')">@Messages("disactivate")</a>
+		} else {
+			<a class="btn btn-success" href="#" onclick="activateVipLounge('@routes.VipLoungeController.activate(vipLounge.id.get)')">@Messages("activate")</a>
+		}
+		</td>
+	</tr>
+}
+</table>

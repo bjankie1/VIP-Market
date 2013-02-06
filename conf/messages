@@ -1,0 +1,41 @@
+# General
+actions=Akcje
+activate=Włącz
+active=Aktywny
+city=Miasto
+country=Państwo
+description=Opis
+disactivate=Wyłącz
+edit=Edycja
+format.boolean=Zaznacz
+general.information=Informacje podstawowe
+name=Nazwa
+preview=Podgląd
+save.success=Udało się zapisać {1}!
+sign.in=Zaloguj się
+
+#Imprezy
+event=Impreza
+event.name=Nazwa imprezy
+event.description=Opis
+event.startdate=Rozpoczęcie
+event.type=Rodzaj imprezy
+
+# Obiekty
+venue=Obiekt
+venue.list=Lista obiektów
+venue.name=Nazwa obiektu
+venue.description=Opis
+venue.street=Ulica
+venue.city=Miasto
+venue.country=Kraj
+venue.active=Aktywny
+
+#VIP Lounge
+vip.lounge=Loża VIP
+vip.lounges=Loże VIP
+vip.lounge.seats=Liczba miejsc
+vip.lounge.create=Dodaj lożę VIP
+vip.lounge.location=Kod na planie obiektu
+vip.lounge.list=Lista lóż
+vip.lounge.add=Dodaj lożę

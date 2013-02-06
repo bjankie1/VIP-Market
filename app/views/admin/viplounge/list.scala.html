@@ -1,0 +1,17 @@
+@(venueId: Long, vipLounges: List[models.VipLounge])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("vip.lounge"))(Messages("vip.lounge.list")) {
+  @if(vipLounges.size > 0) {
+  	@table(vipLounges)
+  } else {
+    <div class="alert alert-info">
+	  <button type="button" class="close" data-dismiss="alert">&times;</button>
+	  Nie ma dodanych lóż VIP do obiektu.
+	</div>
+  }
+  
+  <a class="btn btn-primary" href="@routes.VipLoungeController.create(venueId)">@Messages("vip.lounge.add")</a>
+}

@@ -1,0 +1,42 @@
+@(userForm: Form[models.Account])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("User")("Nowy użytkownik") {
+
+  @if(userForm.hasErrors) {
+      <div class="alert-message error">
+          <p><strong>Oops</strong> Please fix all errors</p>
+      </div>
+  } 
+  
+	@helper.form(action = routes.UserController.save) {
+   
+        <fieldset>
+            <legend>General informations</legend>
+            
+            @inputText(
+                userForm("email"), 
+                '_label -> "Email"
+            )
+            
+            @inputText(
+                userForm("name"), 
+                '_label -> "Name"
+            )
+            
+            @inputText(
+                userForm("password"), 
+                '_label -> "Password"
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Insert">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+     	    
+	}
+}

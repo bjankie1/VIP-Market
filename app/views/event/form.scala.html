@@ -1,0 +1,61 @@
+@(id: Long, eventForm: Form[models.Event], venues: Map[String,String])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main(Messages("event"))("Nowy event") {
+
+	@if(eventForm.hasErrors) {
+		<div class="alert-message error">
+			<p><strong>Oops</strong> Please fix all errors</p>
+			<ul>
+				@eventForm.errors.map { error =>
+					<li>@error.key @error.message</li>
+				}
+			</ul>
+		</div>
+	}
+  
+	@helper.form(action = routes.EventController.update(id)) {
+   
+        <fieldset>
+            <legend>@Messages("general.information")</legend>
+            
+            @inputText(
+                eventForm("name"), 
+                '_label -> Messages("event.name")
+            )
+            
+            @textarea(
+                eventForm("description"), 
+                '_label -> Messages("event.description"),
+                'rows -> 3,
+                'cols -> 70
+            )
+            
+            @inputDate(
+                eventForm("startDate"), 
+                '_label -> Messages("event.startdate")
+            )
+            
+            @select(
+            	eventForm("eventTypeId"),
+            	options("1" -> "Pilka", "2" -> "Siatka"),
+            	'_label -> Messages("event.type")
+            )
+            
+            @select(
+            	eventForm("venueId"),
+            	options(venues),
+            	'_label -> Messages("venue")
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn primary" value="Insert">
+            <a href="@routes.EventController.list" class="btn">Cancel</a>
+        </div>
+     	    
+	}
+}

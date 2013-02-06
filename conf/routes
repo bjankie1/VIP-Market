@@ -1,0 +1,50 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.index
+
+POST    /login                      controllers.Application.authenticate
+GET     /logout                     controllers.Application.logout
+
+# Users
+GET     /user                       controllers.UserController.list
+GET     /user/edit/:email           controllers.UserController.edit(email)
+GET     /user/create                controllers.UserController.create
+POST    /user/save                  controllers.UserController.save
+
+# Message
+GET     /message/main               controllers.Message.main
+GET     /message/list               controllers.Message.list
+GET     /message/detail/:id         controllers.Message.detail(id: Int)
+GET     /message/write              controllers.Message.write
+
+# Event
+GET     /admin/event/list                 controllers.EventController.list
+GET     /admin/event/edit/:id             controllers.EventController.edit(id: Long)
+POST    /admin/event/edit/:id             controllers.EventController.update(id: Long)
+GET     /admin/event/new                  controllers.EventController.create
+GET     /admin/event/find                 controllers.EventController.find
+
+# Venue
+GET     /admin/venue/list                 controllers.VenueController.list
+GET     /admin/venue/preview/:id          controllers.VenueController.preview(id: Long)
+GET     /admin/venue/edit/:id             controllers.VenueController.edit(id: Long)
+POST    /admin/venue/update/:id           controllers.VenueController.update(id: Long)
+
+GET    /admin/wiki                        controllers.VenueController.wiki
+
+# VipLounge
+GET     /admin/viplounge/list/:venueId    controllers.VipLoungeController.list(venueId: Long)
+GET     /admin/viplounge/new/:venueId     controllers.VipLoungeController.create(venueId: Long)
+GET     /admin/viplounge/:id              controllers.VipLoungeController.edit(id: Long)
+POST    /admin/viplounge/:id              controllers.VipLoungeController.update(id: Long)
+GET     /admin/viplounge/activate/:id     controllers.VipLoungeController.activate(id: Long)
+GET     /admin/viplounge/disactivate/:id  controllers.VipLoungeController.disactivate(id: Long)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /file/:id                   controllers.FileController.load(id)
+POST    /upload                     controllers.FileController.upload
+GET     /upload                     controllers.FileController.add

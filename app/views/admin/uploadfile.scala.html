@@ -1,0 +1,17 @@
+@(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("vip.lounge"))(Messages("edit")) {
+	
+	@helper.form(action = routes.FileController.upload, 'enctype -> "multipart/form-data") {
+	    
+	    <input type="file" name="picture" multiple="multiple">
+	    
+	    <p>
+	        <input type="submit">
+	    </p>
+	    
+	}
+}

@@ -1,0 +1,77 @@
+@(id: Long, venueForm: Form[models.Venue])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("venue"))(Messages("venue")) {
+
+	@if(venueForm.hasErrors) {
+		<div class="alert-message error">
+			<p><strong>Oops</strong> Please fix all errors</p>
+			<ul>
+				@venueForm.errors.map { error =>
+					<li>@error.key @error.message</li>
+				}
+			</ul>
+		</div>
+	}
+  
+	@helper.form(action = routes.VenueController.update(id), 'class -> "form-horizontal") {
+   
+        <fieldset>
+            <legend>@Messages("general.information")</legend>
+            
+            @inputText(
+                venueForm("name"), 
+                '_label -> Messages("venue.name"),
+                'style -> "width:500px"
+            )
+            
+            @textarea(
+                venueForm("description"), 
+                '_label -> Messages("venue.description"),
+                'rows -> 10,
+                'cols -> 100,
+                'style -> "width:500px"
+            )
+            
+            @inputText(
+                venueForm("street"), 
+                '_label -> Messages("venue.street"),
+                'style -> "width:500px"
+            )
+                        
+            @inputText(
+                venueForm("city"), 
+                '_label -> Messages("venue.city"),
+                'style -> "width:500px"
+            )
+                        
+            @inputText(
+                venueForm("country"), 
+                '_label -> Messages("venue.country"),
+                'style -> "width:500px"
+            )
+            
+            @checkbox(
+                venueForm("active"), 
+                '_label -> Messages("venue.active")
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+        	@id match {
+	        	case -1 => {
+	            	<input type="submit" class="btn btn-primary" value="Insert">
+	            }
+	            
+	            case 1 => {
+	            	<input type="submit" class="btn btn-primary" value="Update">
+	            }
+            }
+           	<a href="@routes.EventController.list" class="btn">Cancel</a>
+        </div>
+     	    
+	}
+}
