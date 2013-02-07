@@ -7,10 +7,9 @@
   @if(vipLounges.size > 0) {
   	@table(vipLounges)
   } else {
-    <div class="alert alert-info">
-	  <button type="button" class="close" data-dismiss="alert">&times;</button>
-	  Nie ma dodanych lóż VIP do obiektu.
-	</div>
+    @admin.tags.notice("warning") {
+      "Nie ma dodanych lóż VIP do obiektu."
+    }
   }
   
   <a class="btn btn-primary" href="@routes.VipLoungeController.create(venueId)">@Messages("vip.lounge.add")</a>

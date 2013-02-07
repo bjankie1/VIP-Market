@@ -1,0 +1,24 @@
+<fieldset>
+	<legend>Attachments:</legend>
+	<div class="container">
+		<div  id="files">
+			<div class="row">
+				<div class="span0"><a href="#" onclick="removeFile(this,event);return false;" class="icon-remove"></a></div>
+				<div class="span3"><input class="fileupload" type="file" name="pictures[]" ></div>
+			</div>
+		</div>
+	    <button class="btn btn-primary" onclick="addFile();return false;">@Messages("add")</button>
+    </div>
+    
+</fieldset>
+
+<script type="text/javascript">
+<!--
+function addFile() {
+	$("#files").append("<div class=\"row\"><input type=\"file\" name=\"pictures[]\"></div>");
+}
+function removeFile(source) {
+	$(source).closest('.row').remove();
+}
+//-->
+</script>

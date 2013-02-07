@@ -47,4 +47,5 @@ GET     /admin/viplounge/disactivate/:id  controllers.VipLoungeController.disact
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /file/:id                   controllers.FileController.load(id)
 POST    /upload                     controllers.FileController.upload
+POST    /pictures                   controllers.FileController.pictures
 GET     /upload                     controllers.FileController.add

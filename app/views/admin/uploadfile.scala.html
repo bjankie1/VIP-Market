@@ -5,13 +5,13 @@
 
 @admin.main(Messages("vip.lounge"))(Messages("edit")) {
 	
-	@helper.form(action = routes.FileController.upload, 'enctype -> "multipart/form-data") {
-	    
-	    <input type="file" name="picture" multiple="multiple">
-	    
+	@helper.form(action = routes.FileController.pictures, 'enctype -> "multipart/form-data") {
+	    <legend>Pliki</legend>
+ 	    <input type="file" name="pictures[]"><br/>
+ 	    <input type="file" name="pictures[]"><br/>
 	    <p>
 	        <input type="submit">
 	    </p>
 	    
-	}
+	}	
 }
