@@ -34,41 +34,50 @@ object EventController extends BaseController {
   
   def venues = List("1" -> "Stadion narodowy", "2" -> "Stadion Maslice")
   
-  def list = Action { implicit request =>
-    Ok(views.html.event.list(
-        //Event.findByStartDate(startDate, endDate)
-        Nil
+  def index: Action[play.api.mvc.AnyContent] = list(1)
+  
+  def list(page: Int = 1) = Action { implicit request =>
+    Ok(views.html.admin.event.list(
+        Event.listByPage(page, 20),
+        Event.count
     ))
   }
 
   def update(id: Long) = Action { implicit request =>
     eventForm.bindFromRequest.fold(
-      errors => BadRequest(views.html.event.form(id, errors, venues toMap)),
+      errors => BadRequest(views.html.admin.event.form(id, errors, venues toMap)),
       event => {
         val updated = Event.update(id, event)
-    	Ok(views.html.event.summary(updated))
+    	Ok(views.html.admin.event.summary(updated))
       }
 	)
   }
 
   def create = Action { implicit request =>
-    Ok(views.html.event.form(-1, eventForm.fill(Event.createNew), venues toMap))
+    Ok(views.html.admin.event.form(-1, eventForm.fill(Event.createNew), venues toMap))
   }
 
   def edit(id: Long) = Action { implicit request =>
     Event.findById(id) match {
-      case Some(existing) => Ok(views.html.event.form( existing.id.get, eventForm.fill(existing), venues toMap ))
-      case None           => Redirect(routes.EventController.list) flashing "message" -> "Event could not be found"
+      case Some(existing) => Ok(views.html.admin.event.form( existing.id.get, eventForm.fill(existing), venues toMap ))
+      case None           => Redirect(routes.EventController.list(1)) flashing "message" -> "Event could not be found"
     }
   }
   
   def find = Action{ implicit request =>
-    Ok(views.html.event.list(
+    Ok(views.html.admin.event.list(
         Event.findByStartDate(
             DateTime.parse("2012-12-10"), 
             DateTime.parse("2012-12-30")
-        )
+        ), 1
     ))
   }
+  
+  def activate(id: Long) = Action { implicit request =>
+    Ok("aktywowana impreza")
+  }
 
+  def disactivate(id: Long) = Action { implicit request =>
+    Ok("wstrzymana impreza")
+  }
 }

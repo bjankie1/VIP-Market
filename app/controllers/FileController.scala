@@ -14,8 +14,12 @@ import play.api.mvc.ResponseHeader
 import play.api.libs.iteratee.Iteratee
 import play.api.libs.Files.TemporaryFile
 
-object FileController extends Controller {
+object FileController extends BaseController {
 
+  def list = Action { implicit request =>
+    Ok(views.html.admin.files( File.list))
+  }
+  
   def load(id: String) = Action {
     Logger.debug(s"Loading file ${id}")
     val file = File.load(UUID.fromString(id))
@@ -42,25 +46,13 @@ object FileController extends Controller {
     }
   }
   
-  def pictures = UploadPictures { implicit request =>
+  def pictures = UploadPictures("general") { implicit request =>
     Logger.info("Uploading pictures")
     Ok(s"uploaded ${request.files.size} files")
   }
 
   def add = Action { implicit request =>
     Ok(views.html.admin.uploadfile.apply)
-  }
-
-  def UploadPictures(f: FileRequest => Result) = {
-    Action(parse.multipartFormData) { request =>
-      val ids = request.body.files.filter(!_.filename.isEmpty()) map { picture =>
-        Logger.info(s"Saving ${picture.filename}")
-        val filename = picture.filename
-        val contentType = picture.contentType
-        File.store(picture.filename, "unknown", picture.ref.file)
-      }
-      f(FileRequest(ids, request))
-    }
   }
   
 }

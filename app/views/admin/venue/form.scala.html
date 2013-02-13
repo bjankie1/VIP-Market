@@ -61,16 +61,12 @@
         </fieldset>
         
         <div class="actions">
-        	@id match {
-	        	case -1 => {
-	            	<input type="submit" class="btn btn-primary" value="Insert">
-	            }
-	            
-	            case 1 => {
-	            	<input type="submit" class="btn btn-primary" value="Update">
-	            }
+        	@if(id >= 0) {
+            	<input type="submit" class="btn btn-primary" value="Update">
+            } else {
+            	<input type="submit" class="btn btn-primary" value="Insert">
             }
-           	<a href="@routes.EventController.list" class="btn">Cancel</a>
+           	<a href="@routes.VenueController.list" class="btn">Cancel</a>
         </div>
      	    
 	}

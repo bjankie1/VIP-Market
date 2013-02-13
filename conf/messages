@@ -14,12 +14,18 @@ preview=Podgląd
 save.success=Udało się zapisać {1}!
 sign.in=Zaloguj się
 
+#Files
+files=Pliki
+files.list=Lista plików
+
 #Imprezy
 event=Impreza
 event.name=Nazwa imprezy
 event.description=Opis
 event.startdate=Rozpoczęcie
 event.type=Rodzaj imprezy
+event.create=Nowa impreza
+event.list=Lista imprez
 
 # Obiekty
 venue=Obiekt

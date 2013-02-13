@@ -13,6 +13,7 @@ GET     /user                       controllers.UserController.list
 GET     /user/edit/:email           controllers.UserController.edit(email)
 GET     /user/create                controllers.UserController.create
 POST    /user/save                  controllers.UserController.save
+GET     /user/json                  controllers.UserController.jsonUsers
 
 # Message
 GET     /message/main               controllers.Message.main
@@ -21,11 +22,14 @@ GET     /message/detail/:id         controllers.Message.detail(id: Int)
 GET     /message/write              controllers.Message.write
 
 # Event
-GET     /admin/event/list                 controllers.EventController.list
+GET     /admin/event/index                controllers.EventController.index
+GET     /admin/event/list                 controllers.EventController.list(page: Int ?= 1)
 GET     /admin/event/edit/:id             controllers.EventController.edit(id: Long)
 POST    /admin/event/edit/:id             controllers.EventController.update(id: Long)
 GET     /admin/event/new                  controllers.EventController.create
 GET     /admin/event/find                 controllers.EventController.find
+GET     /admin/event/activate/:id         controllers.EventController.activate(id: Long)
+GET     /admin/event/disactivate/:id      controllers.EventController.disactivate(id: Long)
 
 # Venue
 GET     /admin/venue/list                 controllers.VenueController.list
@@ -45,6 +49,7 @@ GET     /admin/viplounge/disactivate/:id  controllers.VipLoungeController.disact
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /files                      controllers.FileController.list
 GET     /file/:id                   controllers.FileController.load(id)
 POST    /upload                     controllers.FileController.upload
 POST    /pictures                   controllers.FileController.pictures

@@ -156,6 +156,17 @@ object File {
     }
   }
   
+  def list = {
+    Logger.info("Listing all files")
+    val sql = """
+      select * from file_info order by name
+      """
+    Logger("sql").debug(sql)
+    DB.withConnection { implicit connection =>
+      SQL(sql).as(simple *)
+    }
+  }
+  
   // -- DB store
   
   def insert(file: File, originalFile: java.io.File) = {

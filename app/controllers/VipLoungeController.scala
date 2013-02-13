@@ -12,6 +12,7 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc._
 import play.api.libs.json.Json
+import play.api.libs.Files.TemporaryFile
 
 object VipLoungeController extends BaseController {
   
@@ -80,7 +81,7 @@ object VipLoungeController extends BaseController {
     Ok(Json.obj("status" ->"OK", "message" -> s"VIP lounge disactivated"))
   }
   
-  def update(id: Long) = Action { implicit request =>
+  def update(id: Long) = Action(parse.multipartFormData) { implicit request =>
     Logger("controller").debug(s"Updating VIP Lounge ${id}")
     form.bindFromRequest.fold(
       errors => BadRequest(views.html.admin.viplounge.form(
@@ -89,16 +90,20 @@ object VipLoungeController extends BaseController {
           Venue.getAll.map(v => v.id.get.toString ->  v.name)
         )
       ),
-      vipLounge => { val updated = id match {
+      vipLounge => { val updatedId = id match {
           case -1 => {
             val newId = VipLounge.insert(vipLounge)
             Logger("controller").info(s"Created VIP lounge ${newId}")
+            newId
           }
           case default => {
             VipLounge.update(id, vipLounge)
             Logger("controller").info(s"Updated VIP lounge ${id}")
+            id
           }
         }
+        request.upload(s"vipLounge:${updatedId}")
+        Logger.debug(s"Uploaded pictures for VIP lounge ${updatedId}")
       	Redirect(routes.VenueController.edit(vipLounge.venueId)).flashing("message" -> Messages("success", vipLounge.name))
       }
 	)

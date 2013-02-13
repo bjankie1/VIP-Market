@@ -1,0 +1,24 @@
+@(files: List[models.File])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+
+@admin.main(Messages("files"))(Messages("files.list")) {
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<td>@Messages("name")</td>
+				<td>@Messages("actions")</td>
+			</tr>
+		</thead>
+	@files.map { file =>
+		<tr>
+			<td><a href="#">@file.name</a></td>
+			<td>
+				<img src="@routes.FileController.load(file.id.toString)">
+			</td>
+		</tr>
+	}
+	</table>
+}

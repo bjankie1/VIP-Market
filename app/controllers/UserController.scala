@@ -7,6 +7,7 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc._
+import play.api.libs.json.Json
 
 object UserController extends Controller {
 
@@ -21,6 +22,10 @@ object UserController extends Controller {
       else Some((a.id, a.email, a.name, a.password))
       })
     )
+    
+  def jsonUsers = Action {
+    Ok(Json.obj("values" -> Json.arr(Json.obj("id" -> 1, "text" -> "Bartek"), Json.obj("id" -> 2, "text" -> "Marek"))))
+  }
 
   /**
     * List of all users

@@ -1,0 +1,36 @@
+@(events: List[models.Event], count: Int)(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("event"))(Messages("event.list")) {
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<td>@Messages("name")</td>
+				<td>@Messages("actions")</td>
+			</tr>
+		</thead>
+	@events.map { event =>
+		<tr>
+			<td><a href="@routes.EventController.edit(event.id.get)">@event.name</a></td>
+			<td>
+				<div class="btn-group">
+					<button class="btn btn-mini"><a href="@routes.EventController.create">@Messages("event.create")</a></button>
+				</div>
+			</td>
+		</tr>
+	}
+	</table>
+
+	<div class="pagination">
+	  <ul>
+	    <li><a href="#">Prev</a></li>
+	    <li><a href="#">1</a></li>
+	    <li><a href="#">2</a></li>
+	    <li><a href="#">3</a></li>
+	    <li><a href="#">4</a></li>
+	    <li><a href="#">Next</a></li>
+	  </ul>
+	</div>
+}

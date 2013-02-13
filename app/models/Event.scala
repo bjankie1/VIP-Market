@@ -92,6 +92,39 @@ object Event extends AbstractModel {
   /**
    * Retrieve a set of events by starting date range
    */
+  def listByPage(page: Int, limit: Int): List[Event] = {
+    Logger.info(s"Finding from ${(page -1)*limit} to ${page*limit}")
+    val sql = """
+            select * from event order by start_date LIMIT {limit} OFFSET {offset}
+            """
+    Logger("sql").debug(sql)
+    DB.withConnection {
+      (implicit connection =>
+        SQL(sql).on(
+          'limit 	-> limit,
+          'offset 	-> Math.max(0, page - 1) * limit
+        ).as(Event.simple *))
+    }
+  }
+  
+  /**
+    * Retrieve a User from email.
+    */
+  def count: Int = {
+    Logger.info("finding event")
+    val sql = "select count(*) from event"
+    Logger("sql").debug(sql)
+    val result = DB.withConnection {
+      (implicit connection =>
+        SQL(sql).as(scalar[Long].single)
+      )
+    }
+    result.intValue()
+  }  
+    
+  /**
+   * Retrieve a set of events by starting date range
+   */
   def findByStartDate(startDate: DateTime, endDate: DateTime): List[Event] = {
     Logger.info(s"Finding events between ${startDate} and ${endDate}")
     val sql = """
