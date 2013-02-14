@@ -50,6 +50,12 @@ create table file_info (
   size                      int(11)      not null
 );
 
+create table vip_lounge_event (
+  event_id                  int(11),
+  vip_lounge_id             int(11)      not null,
+  base_price                double       not null,
+  primary key(event_id,vip_lounge_id)
+);
 
 
 # --- !Downs

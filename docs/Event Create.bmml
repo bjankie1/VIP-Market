@@ -212,5 +212,6 @@
         <text/>
       </controlProperties>
     </control>
+    <control controlID="57" controlTypeID="com.balsamiq.mockups::RedX" x="97" y="1041" w="515" h="175" measuredW="240" measuredH="104" zOrder="41" locked="false" isInGroup="-1"/>
   </controls>
 </mockup>
