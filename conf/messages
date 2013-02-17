@@ -26,6 +26,7 @@ event.startdate=Rozpoczęcie
 event.type=Rodzaj imprezy
 event.create=Nowa impreza
 event.list=Lista imprez
+event.lounges=Loże VIP
 
 # Obiekty
 venue=Obiekt

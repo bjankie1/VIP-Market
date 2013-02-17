@@ -13,7 +13,7 @@ class VipLoungeAtEventModelSpec extends Specification {
     
     "be inserted and then loaded" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 666, 666.0))
+        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 666, 666.0, true))
         val Some(fakeLoungeAtEvent) = VipLoungeAtEvent.load(1, 666)
         fakeLoungeAtEvent.basePrice must equalTo(666.0)
       }
@@ -21,7 +21,7 @@ class VipLoungeAtEventModelSpec extends Specification {
 
     "be retrieved by event and VIP lounge ids" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 1, 10.0))
+        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 1, 10.0, true))
         val Some(fakeLoungeAtEvent) = VipLoungeAtEvent.load(1, 1)
         fakeLoungeAtEvent.basePrice must equalTo(10.0)
       }
@@ -38,8 +38,8 @@ class VipLoungeAtEventModelSpec extends Specification {
     "be updated" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
         //given
-        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 666, 666.0))
-        VipLoungeAtEvent.update(VipLoungeAtEvent(1, 666, 6660.0))
+        VipLoungeAtEvent.create(VipLoungeAtEvent(1, 666, 666, true))
+        VipLoungeAtEvent.update(VipLoungeAtEvent(1, 666, 6660.0, true))
         val Some(fakeLoungeAtEvent) = VipLoungeAtEvent.load(1, 666)
         fakeLoungeAtEvent.basePrice must equalTo(6660.0)
       }

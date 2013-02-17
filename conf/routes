@@ -16,10 +16,10 @@ POST    /user/save                  controllers.UserController.save
 GET     /user/json                  controllers.UserController.jsonUsers
 
 # Message
-GET     /message/main               controllers.Message.main
-GET     /message/list               controllers.Message.list
-GET     /message/detail/:id         controllers.Message.detail(id: Int)
-GET     /message/write              controllers.Message.write
+GET     /message/main                     controllers.Message.main
+GET     /message/list                     controllers.Message.list
+GET     /message/detail/:id               controllers.Message.detail(id: Int)
+GET     /message/write                    controllers.Message.write
 
 # Event
 GET     /admin/event/index                controllers.EventController.index
@@ -30,6 +30,8 @@ GET     /admin/event/new                  controllers.EventController.create
 GET     /admin/event/find                 controllers.EventController.find
 GET     /admin/event/activate/:id         controllers.EventController.activate(id: Long)
 GET     /admin/event/disactivate/:id      controllers.EventController.disactivate(id: Long)
+GET     /admin/event/lounges/:id          controllers.EventController.vipLounges(id: Long)
+POST    /admin/event/lounges/:id          controllers.EventController.updateLounges(id: Long)
 
 # Venue
 GET     /admin/venue/list                 controllers.VenueController.list

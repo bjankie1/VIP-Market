@@ -1,8 +1,8 @@
 package controllers
 
+import play.api.data.Forms._
 import play.api._
 import play.api.data._
-import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.mvc._
 import models.Venue
@@ -17,6 +17,18 @@ import com.monochromeroad.play.xwiki.rendering.plugin.{DefaultXWikiStringStreamR
 import play.api.libs.iteratee.Enumerator
 
 object VenueController extends BaseController {
+  
+  
+  case class Test(name: String, email: List[String])
+  
+  val testFrom: Form[Test] = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "emails" -> Forms.list(nonEmptyText)
+    )(Test.apply)(Test.unapply)
+  )
+
+  
   
   val form: Form[Venue] = Form(
     mapping(

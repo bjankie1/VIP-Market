@@ -28,4 +28,22 @@ abstract class AbstractModel {
     }
   }
 
+  
+  
+  implicit def rowToBigDecimal: Column[BigDecimal] = Column.nonNull { (value, meta) =>
+    val MetaDataItem(qualified, nullable, clazz) = meta
+    value match {
+      case bd: java.math.BigDecimal => Right(BigDecimal(bd))
+      case d: Double                => Right(BigDecimal(d))
+      case str: java.lang.String    => Right(BigDecimal(str))
+      case _                        => Left(TypeDoesNotMatch("Cannot convert " + value + ":" + value.asInstanceOf[AnyRef].getClass))
+    }
+  }
+
+  implicit val bigDecimalToStatement = new ToStatement[BigDecimal] {
+    def set(s: java.sql.PreparedStatement, index: Int, aValue: BigDecimal): Unit = {
+      s.setBigDecimal(index, aValue.bigDecimal)
+    }
+  }
+
 }

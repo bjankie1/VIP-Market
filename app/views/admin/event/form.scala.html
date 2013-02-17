@@ -1,4 +1,4 @@
-@(id: Long, eventForm: Form[models.Event], venues: Map[String,String])(implicit flash: Flash)
+@(id: Long, eventForm: Form[models.Event], venues: List[(String,String)])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -46,8 +46,14 @@
             
             @select(
             	eventForm("venueId"),
-            	options(venues),
+            	venues,
             	'_label -> Messages("venue")
+            )
+            
+
+            @checkbox(
+                eventForm("active"), 
+                '_label -> Messages("active")
             )
             
             <p><input type="hidden" id="entiled_users" style="width:300px" value="brown"/></p>

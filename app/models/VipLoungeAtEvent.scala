@@ -10,16 +10,25 @@ import play.api.Logger
 case class VipLoungeAtEvent(
     eventId: Long,
     loungeId: Long,
-    basePrice: Double
+    basePrice: BigDecimal,
+    active : Boolean
 )
+//{
+//  def this( eventId: Long, loungeId: Long, basePrice: Double, active: Boolean) = 
+//    this(eventId, loungeId, new BigDecimal(basePrice), active)
+//  
+//  def this( eventId: Long, loungeId: Long, basePrice: Int, active: Boolean) = 
+//    this(eventId, loungeId, new BigDecimal(basePrice), active)
+//}
 
-object VipLoungeAtEvent {
+object VipLoungeAtEvent extends AbstractModel {
   
   def simple = {
     get[Long]("vip_lounge_event.event_id") ~
     get[Long]("vip_lounge_event.vip_lounge_id") ~
-    get[Double]("vip_lounge_event.base_price") map {
-      case eventId ~ vipLoungeId ~ price => VipLoungeAtEvent(eventId, vipLoungeId, price)
+    get[BigDecimal]("vip_lounge_event.base_price") ~
+    get[Boolean]("vip_lounge_event.active") map {
+      case eventId ~ vipLoungeId ~ price ~ active => VipLoungeAtEvent(eventId, vipLoungeId, price, active)
     }
   }
   
@@ -53,14 +62,16 @@ object VipLoungeAtEvent {
   def create(vipLoungeAtEvent: VipLoungeAtEvent) = {
     Logger.debug(s"Saving VIP lounge ${vipLoungeAtEvent.loungeId} at ${vipLoungeAtEvent.eventId}")
     val sql = """
-      insert into vip_lounge_event(event_id,vip_lounge_id,base_price) values({eventId},{vipLoungeId},{price})
+      insert into vip_lounge_event(event_id,vip_lounge_id,base_price,active) 
+      values({eventId},{vipLoungeId},{price},{active})
       """
     Logger("sql").debug(sql)
     DB.withConnection { implicit connection =>
       SQL(sql).on(
         'eventId     -> vipLoungeAtEvent.eventId,
         'vipLoungeId -> vipLoungeAtEvent.loungeId,
-        'price       -> vipLoungeAtEvent.basePrice
+        'price       -> vipLoungeAtEvent.basePrice,
+        'active      -> vipLoungeAtEvent.active
       ).executeInsert()
     }
   }
@@ -69,7 +80,7 @@ object VipLoungeAtEvent {
     Logger.debug(s"Updating VIP lounge ${vipLoungeAtEvent.loungeId} at ${vipLoungeAtEvent.eventId}")
     val sql = """
       update vip_lounge_event 
-      set base_price={price}
+      set base_price={price}, active = {active}
       where event_id={eventId} and vip_lounge_id={vipLoungeId} 
       """
     Logger("sql").debug(sql)
@@ -77,8 +88,16 @@ object VipLoungeAtEvent {
       SQL(sql).on(
         'eventId     -> vipLoungeAtEvent.eventId,
         'vipLoungeId -> vipLoungeAtEvent.loungeId,
-        'price       -> vipLoungeAtEvent.basePrice
-      ).executeUpdate()
+        'price       -> vipLoungeAtEvent.basePrice,
+        'active      -> vipLoungeAtEvent.active
+      ).executeUpdate() match {
+        case 0 => {
+          Logger.info(s"VIP lounge ${vipLoungeAtEvent.loungeId} wasn't attached to event ${vipLoungeAtEvent.eventId}, inserting!")
+          create( vipLoungeAtEvent)
+          1
+        }
+        case default => 1
+      }
     }
   }
   

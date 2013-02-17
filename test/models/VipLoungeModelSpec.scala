@@ -51,6 +51,7 @@ class VipLoungeModelSpec extends Specification {
             NotAssigned, 
             "name",
             1,
+            666,
             "lounge1",
             "A good lounge",
             1,

@@ -15,6 +15,7 @@ case class VipLounge(
     id:           Pk[Long], 
     name:         String,
     venueId:      Long, 
+    basePrice:    BigDecimal,
     locationCode: String, 
     description:  String, 
     seatsNumber:  Int,
@@ -33,6 +34,7 @@ object VipLounge extends AbstractModel {
       NotAssigned,
       "",
       venueId,
+      0,
       "",
       "",
       0,
@@ -45,14 +47,22 @@ object VipLounge extends AbstractModel {
     get[Pk[Long]]("vip_lounge.id") ~
     str("vip_lounge.name") ~
     long("vip_lounge.venue_id") ~
+    get[java.math.BigDecimal]("vip_lounge.base_price") ~
     str("vip_lounge.location_code") ~
     str("vip_lounge.description") ~
     int("vip_lounge.seats_number") ~
     get[Boolean]("vip_lounge.active") ~
     get[DateTime]("vip_lounge.date_created") map {
-      case id ~ name ~ venueId ~ locationCode ~ description ~ seats ~ active ~ dateCreated => VipLounge(
-        id, name, venueId, locationCode, description, seats, active, dateCreated
+      case id ~ name ~ venueId ~ basePrice ~ locationCode ~ description ~ seats ~ active ~ dateCreated => VipLounge(
+        id, name, venueId, basePrice, locationCode, description, seats, active, dateCreated
       )
+    }
+  }
+  
+  def idName: RowParser[(Long,String)] = {
+    get[Long]("vip_lounge.id") ~
+    str("vip_lounge.name") map {
+      case id ~ name => (id, name)
     }
   }
   
@@ -71,7 +81,12 @@ object VipLounge extends AbstractModel {
   
   def findByVenue(venueId: Long) = {
     Logger.debug(s"Loading VIP Lounge for venue ${venueId}")
-    val sql = "select * from vip_lounge where venue_id = {venueId}"
+    val sql = """
+      		select *
+    		from vip_lounge
+    		where venue_id = {venueId}
+    		order by name
+    		"""
     Logger("sql").debug(sql)
     DB.withConnection {
       (implicit connection =>
@@ -81,6 +96,25 @@ object VipLounge extends AbstractModel {
       )
     }    
   }
+  
+  def idToName(venueId: Long): Map[Long, String] = {
+    Logger.debug(s"Loading VIP Lounge for venue ${venueId}")
+    val sql = """
+      select id, name 
+      from vip_lounge 
+      where venue_id = {venueId}
+      """
+    Logger("sql").debug(sql)
+    val result = DB.withConnection {
+      (implicit connection =>
+        SQL(sql).on(
+          'venueId -> venueId
+        ).as(idName *)
+      )
+    }
+    result.toMap
+  }
+    
   
   def activate(id: Long, active: Boolean) = {
     Logger.info(s"Activating VIP lounge ${id}")
@@ -104,8 +138,8 @@ object VipLounge extends AbstractModel {
   def insert(vipLounge: VipLounge) = {
     Logger.debug(s"Inserting VIP Lounge ${vipLounge}")
     val sql = """
-              insert into vip_lounge(name, venue_id, description, location_code, seats_number, active, date_created) 
-              values({name}, {venueId}, {description}, {locationCode}, {seatsNumber}, {active}, {dateCreated})
+              insert into vip_lounge(name, venue_id, base_price, description, location_code, seats_number, active, date_created) 
+              values({name}, {venueId}, {basePrice}, {description}, {locationCode}, {seatsNumber}, {active}, {dateCreated})
               """
     Logger("sql").debug(sql)
     DB.withConnection {
@@ -113,6 +147,7 @@ object VipLounge extends AbstractModel {
         SQL(sql).on(
           'venueId       -> vipLounge.venueId,
           'name          -> vipLounge.name,
+          'basePrice     -> vipLounge.basePrice,
           'description   -> vipLounge.description,
           'locationCode  -> vipLounge.locationCode,
           'seatsNumber   -> vipLounge.seatsNumber,
@@ -120,7 +155,7 @@ object VipLounge extends AbstractModel {
           'dateCreated   -> vipLounge.created
         ).executeInsert() match {
           case Some(id) => id
-          case None     => throw new Exception("")
+          case None     => throw new Exception("Coulnd't read generated ID")
         }
       )
     }    
@@ -131,7 +166,8 @@ object VipLounge extends AbstractModel {
     val sql = """
               update vip_lounge set 
                 name          = {name}, 
-                venue_id      = {venueId}, 
+                venue_id      = {venueId},
+                base_price    = {basePrice}, 
                 description   = {description}, 
                 location_code = {locationCode}, 
                 seats_number  = {seatsNumber},
@@ -145,6 +181,7 @@ object VipLounge extends AbstractModel {
           'id            -> id,
           'venueId       -> vipLounge.venueId,
           'name          -> vipLounge.name,
+          'basePrice     -> vipLounge.basePrice,
           'description   -> vipLounge.description,
           'locationCode  -> vipLounge.locationCode,
           'seatsNumber   -> vipLounge.seatsNumber,

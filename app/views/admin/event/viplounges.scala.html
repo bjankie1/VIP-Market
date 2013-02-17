@@ -1,0 +1,40 @@
+@(id: Long, loungesForm: Form[controllers.EventController.VipLoungesAtEvent], loungesNames: Map[Long, String])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("event"))(Messages("event.lounges")) {
+
+	@if(loungesForm.hasErrors) {
+		<div class="alert-message error">
+			<p><strong>Oops</strong> Please fix all errors</p>
+			<ul>
+				@loungesForm.errors.map { error =>
+					<li>@error.key @error.message</li>
+				}
+			</ul>
+		</div>
+	}
+  
+	@helper.form(action = routes.EventController.update(id)) {
+   
+   		@repeat( loungesForm("lounges"), min = 0) { loungeForm =>
+			<div class="row-fluid">
+				<span class="span1">
+		            @checkbox(
+		                loungeForm("active"), 
+		                '_label -> Messages("active")
+		            )
+				</span>
+				<span class="span3">@loungeForm("name").value</span>
+				<span class="span1">
+		            @inputText(
+		                loungeForm("name"), 
+		                '_label -> Messages("price")
+		            )
+				</span>
+				
+			</div>
+		}
+	}
+}

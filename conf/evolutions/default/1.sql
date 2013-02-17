@@ -33,6 +33,7 @@ create table venue (
 create table vip_lounge (
   id                        int(11)      not null primary key auto_increment,
   name                      varchar(255) not null,
+  base_price                NUMERIC,
   description               varchar(255) not null,
   venue_id                  int(11)      not null,
   location_code             varchar(255) not null,
@@ -53,7 +54,8 @@ create table file_info (
 create table vip_lounge_event (
   event_id                  int(11),
   vip_lounge_id             int(11)      not null,
-  base_price                double       not null,
+  base_price                NUMERIC,
+  active                    boolean      not null,
   primary key(event_id,vip_lounge_id)
 );
 

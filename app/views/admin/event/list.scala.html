@@ -16,12 +16,13 @@
 			<td><a href="@routes.EventController.edit(event.id.get)">@event.name</a></td>
 			<td>
 				<div class="btn-group">
-					<button class="btn btn-mini"><a href="@routes.EventController.create">@Messages("event.create")</a></button>
+					<button class="btn btn-mini"><a href="@routes.EventController.vipLounges(event.id.get)">@Messages("event.lounges")</a></button>
 				</div>
 			</td>
 		</tr>
 	}
 	</table>
+	<button class="btn btn-normal"><a href="@routes.EventController.create">@Messages("event.create")</a></button>
 
 	<div class="pagination">
 	  <ul>

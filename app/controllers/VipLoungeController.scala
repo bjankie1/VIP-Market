@@ -20,18 +20,20 @@ object VipLoungeController extends BaseController {
     mapping(
       "id"          -> ignored(NotAssigned:Pk[Long]),
       "name"        -> nonEmptyText(1, 255),
+      "basePrice"   -> bigDecimal,
       "locationCode"-> text(1, 255),
       "description" -> nonEmptyText,
       "active"      -> boolean,
       "venueId"     -> number,
       "seatsNumber" -> number
-    )((id, name, locationCode, description, active, venueId, seats) => 
-      VipLounge(id, name, venueId, locationCode, description, seats, active, DateTime.now()))( 
+    )((id, name, basePrice, locationCode, description, active, venueId, seats) => 
+      VipLounge(id, name, venueId, basePrice, locationCode, description, seats, active, DateTime.now()))( 
           vipLounge => {
             if( vipLounge eq null) None
             else Some((
                 vipLounge.id, 
-                vipLounge.name, 
+                vipLounge.name,
+                vipLounge.basePrice,
                 vipLounge.locationCode, 
                 vipLounge.description, 
                 vipLounge.active, 
