@@ -3,10 +3,16 @@
 # --- !Ups
 
 create table user (
-  email                     varchar(255) not null primary key,
+  id                        int(11)      not null primary key auto_increment,
+  email                     varchar(255) not null,
   name                      varchar(255) not null,
-  password                  varchar(255) not null
+  password                  varchar(255) not null,
+  active                    boolean      not null default true,
+  date_created              datetime     not null,
+  permission                varchar(20)  not null
 );
+
+ALTER TABLE user ADD CONSTRAINT email_unique UNIQUE(email);
 
 create table event (
   id                        int(11)      not null primary key auto_increment,
@@ -66,4 +72,5 @@ drop table if exists user;
 drop table if exists event;
 drop table if exists venue;
 drop table if exists vip_lounge;
+drop table if exists vip_lounge_event;
 drop table if exists file_info;

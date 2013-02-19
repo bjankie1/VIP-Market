@@ -16,25 +16,31 @@
 		</div>
 	}
   
-	@helper.form(action = routes.EventController.update(id)) {
+	@helper.form(action = routes.EventController.updateLounges(id)) {
    
    		@repeat( loungesForm("lounges"), min = 0) { loungeForm =>
-			<div class="row-fluid">
+   		   <input type="hidden" value="@loungeForm("eventId").value" name="@loungeForm("eventId").name">
+   		   <input type="hidden" value="@loungeForm("vipLoungeId").value" name="@loungeForm("vipLoungeId").name">
+			<div class="row">
 				<span class="span1">
 		            @checkbox(
 		                loungeForm("active"), 
 		                '_label -> Messages("active")
 		            )
 				</span>
-				<span class="span3">@loungeForm("name").value</span>
+				<span class="span3">@loungesNames(loungeForm("vipLoungeId").value.get.toLong)</span>
 				<span class="span1">
 		            @inputText(
-		                loungeForm("name"), 
+		                loungeForm("basePrice"), 
 		                '_label -> Messages("price")
 		            )
 				</span>
 				
 			</div>
 		}
+        <div class="actions">
+            <input type="submit" class="btn btn-primary" value="Update">
+            <a href="@routes.EventController.list(1)" class="btn">Cancel</a>
+        </div>		
 	}
 }

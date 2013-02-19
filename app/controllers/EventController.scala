@@ -93,13 +93,14 @@ object EventController extends BaseController {
     	val vle = VipLoungeAtEvent.findLoungesAtEvent(id)
 	    val vleFinal = vle match {
 	      case Nil     => { //no lounges initialized
-	        val lounges = VipLounge.findByVenue(existingEvent.id.get)
-	        lounges.map( l => VipLoungeAtEvent(id, l.id.get, 100, true))
+	        val lounges = VipLounge.findByVenue(existingEvent.venueId)
+	        lounges.map( l => VipLoungeAtEvent(id, l.id.get, l.basePrice, false))
 	      }
 	      case default => vle 
 	    }
+    	Logger.debug(s"Showing options for ${vle.size} lounges")
 	    val lounges = VipLoungesAtEvent(vleFinal)
-	    Ok(views.html.admin.event.viplounges(id, vipLoungesForm.fill(lounges), VipLounge.idToName(id)))
+	    Ok(views.html.admin.event.viplounges(id, vipLoungesForm.fill(lounges), VipLounge.idToName(existingEvent.venueId)))
       } 
     }
   }
@@ -113,12 +114,16 @@ object EventController extends BaseController {
       }
       case Some(existing) => {
 	    vipLoungesForm.bindFromRequest.fold(
-	      errors => BadRequest(views.html.admin.event.viplounges(id, errors, VipLounge.idToName(existing.id.get))),
+	      errors => {
+	        Logger.warn(s"Error binding lounges for ${id}")
+	        BadRequest(views.html.admin.event.viplounges(id, errors, VipLounge.idToName(existing.id.get)))
+	      },
 	      lounges => {
 	        lounges.lounges.map(vle =>
 	          VipLoungeAtEvent.update(vle)
 	        )
-	    	Redirect("/admin/event")
+	        Logger.debug(s"Redirecting to ${routes.EventController.list(1).url} after successful action")
+	    	Redirect(routes.EventController.list(1).url)
 	      }
 		)
       }
@@ -137,14 +142,7 @@ object EventController extends BaseController {
     }
   }
   
-  def find = Action{ implicit request =>
-    Ok(views.html.admin.event.list(
-        Event.findByStartDate(
-            DateTime.parse("2012-12-10"), 
-            DateTime.parse("2012-12-30")
-        ), 1
-    ))
-  }
+  def find = TODO
   
   def activate(id: Long) = Action { implicit request =>
     Ok("aktywowana impreza")

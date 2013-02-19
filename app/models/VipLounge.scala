@@ -98,7 +98,7 @@ object VipLounge extends AbstractModel {
   }
   
   def idToName(venueId: Long): Map[Long, String] = {
-    Logger.debug(s"Loading VIP Lounge for venue ${venueId}")
+    Logger.debug(s"Loading VIP Lounge names for venue ${venueId}")
     val sql = """
       select id, name 
       from vip_lounge 

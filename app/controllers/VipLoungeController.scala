@@ -62,6 +62,9 @@ object VipLoungeController extends BaseController {
     }
   }
 
+  /**
+   * Initiate form with new VIP lounge for given venue
+   */
   def create(venueId: Long) = Action { implicit request =>
     Logger("controller").info(s"Creating VIP Lounge for venue ${venueId}")
     Ok(views.html.admin.viplounge.form( 
@@ -71,12 +74,18 @@ object VipLoungeController extends BaseController {
     ))
   }
   
+  /**
+   * Activate a given VIP lounge
+   */
   def activate(vipLoungeId: Long)  = Action {
     VipLounge.activate(vipLoungeId, true)
     Logger("controller").info(s"Activated VIP Lounge ${vipLoungeId}")
     Ok(Json.obj("status" ->"OK", "message" -> s"VIP lounge activated"))
   }
   
+  /**
+   * Disactivate a given VIP lounge
+   */
   def disactivate(vipLoungeId: Long)  = Action {
     VipLounge.activate(vipLoungeId, false)
     Logger("controller").info(s"Disactivated VIP Lounge ${vipLoungeId}")

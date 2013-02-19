@@ -13,6 +13,9 @@ name=Nazwa
 preview=Podgląd
 save.success=Udało się zapisać {1}!
 sign.in=Zaloguj się
+signup=Rejestracja
+
+rules.agreement=Zgoda na regulamin
 
 #Files
 files=Pliki
@@ -46,3 +49,14 @@ vip.lounge.create=Dodaj lożę VIP
 vip.lounge.location=Kod na planie obiektu
 vip.lounge.list=Lista lóż
 vip.lounge.add=Dodaj lożę
+
+#Users
+user.name=Imię i nazwisko
+user.password=Hasło
+user.password.repeat=Powtórz hasło
+user.rules.agreement=Zapoznałem się i zgadzam się z regulaminem
+user.notifications.agreement=Chcę otrzymywać powiadomienia związane z procesem rezerwacji na wskazany adres email
+user.password.validation.notmatch=Oba hasła musza być jednakowe
+user.validation.rules.must.agree=Musisz się zgodzić na warunki regulaminu
+user.validation.notifications.must.agree=Musisz się zgodzić na powiadomienia
+error.email=Nieprawidłowy adres email

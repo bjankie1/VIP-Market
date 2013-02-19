@@ -6,10 +6,11 @@ import play.api.data.Forms._
 import play.api.mvc._
 import play.api.Play.current
 import play.api.data.validation.Constraints._
-
 import models.Account
+import jp.t2v.lab.play20.auth.{LoginLogout, Auth}
+import jp.t2v.lab.play20.auth.CookieUtil
 
-object Application  extends Controller  {
+object Application extends Controller with LoginLogout with Auth with AuthConfigImpl {
 
   val loginForm = Form {
     mapping(
@@ -18,16 +19,40 @@ object Application  extends Controller  {
       .verifying("Invalid email or password", result => result.isDefined)
   }
 
-  def index = Action {
-    Ok(views.html.index("SportsMarket.pl"))
+  def index = optionalUserAction{ maybeUser => request =>
+    Logger.debug(s"user ${maybeUser}")
+    maybeUser match {
+      case None       => Ok(views.html.index("SportsMarket"))
+      case Some(user) => Ok(views.html.index(s"SportsMarket ${user.email}"))
+    }
   }
-
+  
+  /** 
+   * Return the `gotoLogoutSucceeded` method's result in the logout action.
+   *
+   * Since the `gotoLogoutSucceeded` returns `PlainResult`, 
+   * you can add a procedure like the following.
+   * 
+   *   gotoLogoutSucceeded.flashing(
+   *     "success" -> "You've been logged out"
+   *   )
+   */
   def logout = Action { implicit request =>
-    Ok("You've been logged out")
+    gotoLogoutSucceeded
   }
 
   def authenticate = Action { implicit request =>
-    Ok("done")
+    Logger.info(s"authenticating request")
+    loginForm.bindFromRequest.fold(
+      formWithErrors => {
+        Logger.warn(s"Authentication failed ${formWithErrors.errors.foldLeft("::")((a,b) => a + b.message)}")
+        BadRequest(views.html.login(formWithErrors))
+      },
+      user => {
+        Logger.info("bound login form values")
+        gotoLoginSucceeded(user.get.email)
+      }
+    )
   }
 
 }

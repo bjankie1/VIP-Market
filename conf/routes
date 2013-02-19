@@ -11,7 +11,8 @@ GET     /logout                     controllers.Application.logout
 # Users
 GET     /user                       controllers.UserController.list
 GET     /user/edit/:email           controllers.UserController.edit(email)
-GET     /user/create                controllers.UserController.create
+GET     /user/signup                controllers.UserController.signup
+POST    /user/signup                controllers.UserController.signupSave
 POST    /user/save                  controllers.UserController.save
 GET     /user/json                  controllers.UserController.jsonUsers
 

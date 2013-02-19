@@ -20,9 +20,16 @@ values ( 3, 'Bania', 'test 3', '2013-01-01', 1, 1, true, '2013-1-1');
 
 --- VIP lounge
 insert into vip_lounge (id, name,base_price, description, venue_id, seats_number, location_code, active, date_created) 
-values ( 1, 'Loża szyderców', 666, 'Wielka zabawa', 666, 1, 'VL_1', true, '2013-01-01');
+values ( 1, 'Loża szyderców', 666, 'Wielka zabawa', 1, 1, 'VL_1', true, '2013-01-01');
+insert into vip_lounge (id, name,base_price, description, venue_id, seats_number, location_code, active, date_created) 
+values ( 2, 'Loża szyderców', 666, 'Wielka zabawa', 1, 1, 'VL_1', true, '2013-01-01');
+
+insert into user(id,email,password,name,active,date_created,permission)
+values(1,'admin@sportsmarket.pl','test','admin',true,'2013-02-12','Administrator'),
+(2,'user@sportsmarket.pl','test','tester',true,'2013-02-12','NormalUser')
 
 # --- !Downs
 
 delete from event;
 delete from venue;
+delete from vip_lounge;

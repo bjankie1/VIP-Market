@@ -1,0 +1,60 @@
+@(userForm: Form[controllers.UserController.SignupData])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("User")(Messages("signup")) {
+
+    @if(userForm.hasErrors) {
+      @admin.tags.notice("error"){
+      Fix errors
+      }
+    } 
+  
+	@helper.form(action = routes.UserController.signupSave) {
+   
+        <fieldset>
+            
+            @inputText(
+                userForm("email"), 
+                '_label -> "Email",
+                'placeholder -> "Email",
+                'type -> "email"
+            )
+            
+            @inputText(
+                userForm("name"), 
+                '_label -> "Name",
+                'placeholder -> Messages("user.name")
+            )
+            
+            @inputPassword(
+                userForm("password"), 
+                '_label -> "Password",
+                'placeholder -> Messages("user.password")
+            )
+            
+            @inputPassword(
+                userForm("password-repeat"), 
+                '_label -> "Password again",
+                'placeholder -> Messages("user.password.repeat")
+            )
+            
+            @checkbox(
+                userForm("agreement1"), 
+                '_label -> Messages("user.rules.agreement")
+            )
+            
+            @checkbox(
+                userForm("agreement2"), 
+                '_label -> Messages("user.notifications.agreement")
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn btn-primary" value="Insert">
+            <a href="@routes.Application.index" class="btn">Cancel</a>
+        </div>
+	}
+}

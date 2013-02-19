@@ -12,8 +12,9 @@ import play.api.mvc.Controller
 import play.api.mvc.Result
 import play.api.mvc.Action
 import play.api.Logger
+import jp.t2v.lab.play20.auth.Auth
 
-trait BaseController extends Controller with ControllerExtensions {
+trait BaseController extends Controller with ControllerExtensions  with Auth with AuthConfigImpl {
   
   /**
     * Formatter for the `Pk` type.

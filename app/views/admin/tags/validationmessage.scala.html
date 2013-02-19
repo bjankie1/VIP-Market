@@ -1,0 +1,11 @@
+@(errors: Seq[FormError])
+
+@if(!errors.isEmpty) {
+    @notice("error") {
+        <ul>
+            @errors.map { error =>
+                <li>@error.key @error.message</li>
+            }
+        </ul>
+    }
+}

@@ -3,10 +3,10 @@
 @import helper._
 @import helper.twitterBootstrap._
 
-@main("User")("Nowy użytkownik") {
+@main("User")(Messages("signup")) {
 
   @if(userForm.hasErrors) {
-      <div class="alert-message error">
+      <div class="alert alert-error">
           <p><strong>Oops</strong> Please fix all errors</p>
       </div>
   } 
@@ -34,7 +34,7 @@
         </fieldset>
         
         <div class="actions">
-            <input type="submit" class="btn primary" value="Insert">
+            <input type="submit" class="btn btn-primary" value="Insert">
             <a href="@routes.Application.index" class="btn">Cancel</a>
         </div>
      	    

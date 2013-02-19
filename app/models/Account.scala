@@ -2,26 +2,25 @@ package models
 
 import play.api.db._
 import play.api.Play.current
-
 import anorm._
 import anorm.SqlParser._
-
 import java.sql.Clob
+import play.api.Logger
 
 /**
   * Default user type.
   */
 case class Account(
-  id: String,
+  id: Pk[Long],
   email: String,
   name: String,
   password: String,
   permission: Permission)
 
-object Account {
+object Account extends AbstractModel {
 
-  def apply(id: String, email: String, name: String, password: String): Account =
-    apply(id, email, name, password, NormalUser)
+  def apply(email: String, name: String, password: String): Account =
+    apply(NotAssigned, email, name, password, NormalUser)
 
   object Clob {
     def unapply(clob: Clob): Option[String] = Some(clob.getSubString(1, clob.length.toInt))
@@ -30,8 +29,8 @@ object Account {
   implicit val rowToPermission: Column[Permission] = {
     Column.nonNull[Permission] { (value, meta) =>
       value match {
-        case Clob("Administrator") => Right(Administrator)
-        case Clob("NormalUser")    => Right(NormalUser)
+        case "Administrator" => Right(Administrator)
+        case "NormalUser"    => Right(NormalUser)
         case _ => Left(TypeDoesNotMatch(
           "Cannot convert %s : %s to Permission for column %s".format(value, value.getClass, meta.column)))
       }
@@ -44,11 +43,11 @@ object Account {
     * Parse a User from a ResultSet
     */
   val simple: RowParser[Account] = {
-    str("account.id") ~
-      str("account.email") ~
-      str("account.name") ~
-      str("account.password") ~
-      get[Permission]("account.permission") map {
+      get[Pk[Long]]("user.id") ~
+      str("user.email") ~
+      str("user.name") ~
+      str("user.password") ~
+      get[Permission]("user.permission") map {
         case id ~ email ~ name ~ password ~ permission => Account(id, email, name, password, permission)
       }
   }
@@ -80,18 +79,20 @@ object Account {
     * Authenticate a User.
     */
   def authenticate(email: String, password: String): Option[Account] = {
+    Logger.debug(s"authenticating user ${email}")
+    val sql = "select * from user where email = {email} and password = {password}"
+    Logger("sql").debug(sql)
     DB.withConnection {
       (implicit connection =>
-        SQL(
-          """
-         select * from user where 
-         email = {email} and password = {password}
-        """).on(
+        SQL(sql).on(
             'email -> email,
             'password -> password).as(Account.simple.singleOpt))
     }
   }
 
+  /**
+   * Number of users in database
+   */
   def userCount: Long =
     DB.withConnection(implicit connection =>
       SQL("select count(*) from user").as(scalar[Long].single))

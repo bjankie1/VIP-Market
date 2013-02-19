@@ -15,6 +15,7 @@ import java.io.StringReader
 import play.api.libs.iteratee.Enumerator.Pushee
 import com.monochromeroad.play.xwiki.rendering.plugin.{DefaultXWikiStringStreamRenderer => XCM}
 import play.api.libs.iteratee.Enumerator
+import jp.t2v.lab.play20.auth.Auth
 
 object VenueController extends BaseController {
   
@@ -55,14 +56,14 @@ object VenueController extends BaseController {
     )
   )
 
-  def list = Action { implicit request =>
+  def list = authorizedAction(authorizeNormalUser) { user => implicit request =>
     Logger("controller").info("Displaying venues")
     val venues = Venue.getAll
     Logger("controller").info(s"loaded ${venues.size} venues")
     Ok(views.html.admin.venue.list(venues))
   }
 
-  def edit(id: Long) = Action { implicit request =>
+  def edit(id: Long) = authorizedAction(authorizeAdmin) { user => implicit request =>
     Logger("controller").info(s"Editing venue ${id}")
     Venue.findById(id) match {
       case Some(existing) => Ok(views.html.admin.venue.form( existing.id.get, form.fill(existing)))
