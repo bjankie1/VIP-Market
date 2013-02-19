@@ -17,15 +17,14 @@ case class Account(
   id: Pk[Long],
   email: String,
   name: String,
-  password: String,
   permission: Permission)
 
 object Account extends AbstractModel {
   
   val SEED_SIZE = 10
 
-  def apply(email: String, name: String, password: String): Account =
-    apply(NotAssigned, email, name, password, NormalUser)
+  def apply(email: String, name: String): Account =
+    apply(NotAssigned, email, name, NormalUser)
 
   object Clob {
     def unapply(clob: Clob): Option[String] = Some(clob.getSubString(1, clob.length.toInt))
@@ -50,12 +49,22 @@ object Account extends AbstractModel {
       get[Pk[Long]]("user.id") ~
       str("user.email") ~
       str("user.name") ~
-      str("user.password") ~
       get[Permission]("user.permission") map {
-        case id ~ email ~ name ~ password ~ permission => Account(id, email, name, password, permission)
+        case id ~ email ~ name  ~ permission => Account(id, email, name, permission)
       }
   }
 
+  val hashSeedOnly: RowParser[(String,String)] = {
+      str("user.password") ~
+      str("user.seed") map {
+        case password ~ seed => (password, seed)
+      }
+  }
+  
+  val withPasswordHash = simple ~ hashSeedOnly map {
+    case user ~ hash => (user, hash)
+  }
+  
   // -- Queries
 
   /**
@@ -84,13 +93,21 @@ object Account extends AbstractModel {
     */
   def authenticate(email: String, password: String): Option[Account] = {
     Logger.debug(s"authenticating user ${email}")
-    val sql = "select * from user where email = {email} and password = {password}"
+    val sql = "select * from user where email = {email}"
     Logger("sql").debug(sql)
-    DB.withConnection {
+    val userOpt = DB.withConnection {
       (implicit connection =>
-        SQL(sql).on(
-            'email -> email,
-            'password -> password).as(Account.simple.singleOpt))
+        SQL(sql).on('email -> email).as(withPasswordHash.singleOpt))
+    }
+    
+    userOpt match {
+      case Some((account,(hash, seed))) => {
+        verifyPassword(hash, password, seed) match {
+          case true => Some(account)
+          case false => None
+        }
+      }
+      case _ => None
     }
   }
 

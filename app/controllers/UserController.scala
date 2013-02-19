@@ -16,14 +16,13 @@ import play.api.i18n.Messages
 
 object UserController extends Controller {
 
-  val userForm: Form[Account] = Form(
+  val userProfileForm: Form[Account] = Form(
     mapping(
       "email" -> nonEmptyText,
-      "name"  -> nonEmptyText,
-      "password" -> nonEmptyText
+      "name"  -> nonEmptyText
     )(Account.apply)(a => {
       if( a eq null) None
-      else Some((a.email, a.name, a.password))
+      else Some((a.email, a.name))
       })
     )
   
@@ -70,7 +69,7 @@ object UserController extends Controller {
   def edit(email: String) = Action {
     val user = Account.findByEmail(email)
     user match {
-      case Some(existing) => Ok(views.html.user.form(userForm.fill(existing)))
+      case Some(existing) => Ok(views.html.user.form(userProfileForm.fill(existing)))
       case None           => Redirect(routes.UserController.list) flashing "message" -> "User could not be found"
     }
   }
@@ -93,7 +92,7 @@ object UserController extends Controller {
   }
 
   def save = Action { implicit request =>
-    userForm.bindFromRequest.fold(
+    userProfileForm.bindFromRequest.fold(
       errors => BadRequest(views.html.user.form(errors)),
       contact => Ok(views.html.user.summary(contact))
     )
