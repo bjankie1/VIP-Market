@@ -24,9 +24,9 @@ values ( 1, 'Loża szyderców', 666, 'Wielka zabawa', 1, 1, 'VL_1', true, '2013-
 insert into vip_lounge (id, name,base_price, description, venue_id, seats_number, location_code, active, date_created) 
 values ( 2, 'Loża szyderców', 666, 'Wielka zabawa', 1, 1, 'VL_1', true, '2013-01-01');
 
-insert into user(id,email,password,name,active,date_created,permission)
-values(1,'admin@sportsmarket.pl','test','admin',true,'2013-02-12','Administrator'),
-(2,'user@sportsmarket.pl','test','tester',true,'2013-02-12','NormalUser')
+insert into user(id,email,password,seed,name,active,date_created,permission)
+values(1,'admin@sportsmarket.pl','test','seed','admin',true,'2013-02-12','Administrator'),
+(2,'user@sportsmarket.pl','test','seed','tester',true,'2013-02-12','NormalUser')
 
 # --- !Downs
 

@@ -6,6 +6,9 @@ import anorm._
 import anorm.SqlParser._
 import java.sql.Clob
 import play.api.Logger
+import play.api.libs.Crypto
+import java.security.MessageDigest
+import scala.util.Random
 
 /**
   * Default user type.
@@ -18,6 +21,8 @@ case class Account(
   permission: Permission)
 
 object Account extends AbstractModel {
+  
+  val SEED_SIZE = 10
 
   def apply(email: String, name: String, password: String): Account =
     apply(NotAssigned, email, name, password, NormalUser)
@@ -28,11 +33,10 @@ object Account extends AbstractModel {
 
   implicit val rowToPermission: Column[Permission] = {
     Column.nonNull[Permission] { (value, meta) =>
-      value match {
-        case "Administrator" => Right(Administrator)
-        case "NormalUser"    => Right(NormalUser)
-        case _ => Left(TypeDoesNotMatch(
-          "Cannot convert %s : %s to Permission for column %s".format(value, value.getClass, meta.column)))
+      Permission.fromString(value.toString) match {
+        case Some(perm) => Right(perm)
+        case None => Left(TypeDoesNotMatch(
+          s"Cannot convert ${value} : ${value.getClass} to Permission for column ${meta.column}"))
       }
     }
   }
@@ -99,22 +103,52 @@ object Account extends AbstractModel {
 
   /**
     * Create a User.
+    * @param email Email of the user
+    * @param password Plain text password - is going to be stored as hash
     */
-  def create(user: Account): Account = {
-    DB.withConnection { implicit connection =>
-      SQL(
+  def create(email: String, name: String, password: String, permission: Permission) = {
+    val sql = 
         """
-          insert into user values (
-            {email}, {name}, {password}
-          )
-        """).on(
-          'email -> user.email,
-          'name -> user.name,
-          'password -> user.password).executeUpdate()
-
-      user
-
+          insert into user(email,name,password,seed,active,date_created,permission) 
+          values ({email},{name},{password},{seed},{active},{dateCreated},{permission})
+        """
+    Logger("sql").debug(sql)
+    val hash: (String, String) = encodePassword(password)
+    val id = DB.withConnection { implicit connection =>
+      SQL(sql).on(
+          'email -> email,
+          'name -> name,
+          'password -> hash._1,
+          'seed -> hash._2,
+          'active -> false,
+          'permission -> permission.toString()
+      ).executeInsert() match {
+      	case Some(primaryKey: Long) => primaryKey
+      	case _ => throw new RuntimeException("Could not insert into database, no PK returned")
+      }
     }
+    Logger.debug(s"User ${name} created with id ${id}")
+    id
+  }
+  
+  def encodePassword(password: String): (String, String) = {
+    val seed: String = generateSeed
+    val token = password + seed
+    val hash = md5(token)
+    (hash, seed)
+  }
+  
+  def md5(s: String): String = {
+    val m = MessageDigest.getInstance("MD5")
+    m.update(s.getBytes(),0,s.length());
+    new java.math.BigInteger(1,m.digest()).toString(16)
+  }
+  
+  def verifyPassword( hash: String, password: String, seed: String) = {
+    val token = password + seed
+    val hashCalculated = md5(token)
+    hashCalculated.equals(hash)
   }
 
+  def generateSeed: String = new String(Random.alphanumeric.take(SEED_SIZE).toArray)
 }

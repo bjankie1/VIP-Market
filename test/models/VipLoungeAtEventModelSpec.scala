@@ -29,9 +29,9 @@ class VipLoungeAtEventModelSpec extends Specification {
 
     "be searched by event ID" in {
       running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
-        val listOfVipLounges = VipLounge.findByVenue(666)
-        listOfVipLounges.size must equalTo(1)
-        listOfVipLounges.forall(_.venueId equals 666l) must beTrue
+        val listOfVipLounges = VipLounge.findByVenue(1)
+        listOfVipLounges.size must equalTo(2)
+        listOfVipLounges.forall(_.venueId equals 1l) must beTrue
       }
     }
 
