@@ -6,7 +6,7 @@ create table user (
   id                        int(11)      not null primary key auto_increment,
   email                     varchar(255) not null,
   name                      varchar(255) not null,
-  password                  varchar(30)  not null,
+  password                  varchar(50)  not null,
   seed                      varchar(10)  not null,
   active                    boolean      not null default true,
   date_created              datetime     not null,

@@ -9,6 +9,8 @@ import play.api.Logger
 import play.api.libs.Crypto
 import java.security.MessageDigest
 import scala.util.Random
+import java.util.Date
+import org.joda.time.DateTime
 
 /**
   * Default user type.
@@ -61,6 +63,13 @@ object Account extends AbstractModel {
       }
   }
   
+  val idNameParser: RowParser[(Long,String)] = {
+    get[Long]("user.id") ~
+    str("user.name") map {
+      case id ~ name => (id, name)
+    }
+  }
+  
   val withPasswordHash = simple ~ hashSeedOnly map {
     case user ~ hash => (user, hash)
   }
@@ -87,6 +96,18 @@ object Account extends AbstractModel {
         SQL("select * from user").as(Account.simple *))
     }
   }
+  
+  def idNameOnly(namePattern: String) = {
+    val sql = """
+      select id,name from user where name like {name} order by name
+      """
+    Logger("sql").debug(sql)
+    DB.withConnection { (implicit connection =>
+      SQL(sql).on(
+        'name -> namePattern
+      ).as(idNameParser *)
+    )}
+  }
 
   /**
     * Authenticate a User.
@@ -103,7 +124,7 @@ object Account extends AbstractModel {
     userOpt match {
       case Some((account,(hash, seed))) => {
         verifyPassword(hash, password, seed) match {
-          case true => Some(account)
+          case true  => Some(account)
           case false => None
         }
       }
@@ -130,7 +151,7 @@ object Account extends AbstractModel {
           values ({email},{name},{password},{seed},{active},{dateCreated},{permission})
         """
     Logger("sql").debug(sql)
-    val hash: (String, String) = encodePassword(password)
+    val hash: (String, String) = createPasswordHash(password)
     val id = DB.withConnection { implicit connection =>
       SQL(sql).on(
           'email -> email,
@@ -138,6 +159,7 @@ object Account extends AbstractModel {
           'password -> hash._1,
           'seed -> hash._2,
           'active -> false,
+          'dateCreated -> DateTime.now(),
           'permission -> permission.toString()
       ).executeInsert() match {
       	case Some(primaryKey: Long) => primaryKey
@@ -148,7 +170,7 @@ object Account extends AbstractModel {
     id
   }
   
-  def encodePassword(password: String): (String, String) = {
+  def createPasswordHash(password: String): (String, String) = {
     val seed: String = generateSeed
     val token = password + seed
     val hash = md5(token)

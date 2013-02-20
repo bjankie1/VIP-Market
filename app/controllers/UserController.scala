@@ -13,6 +13,7 @@ import play.api.data.validation.Constraint
 import play.api.data.validation.Valid
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages
+import views.html.defaultpages.badRequest
 
 object UserController extends Controller {
 
@@ -27,7 +28,8 @@ object UserController extends Controller {
     )
   
   case class SignupData(
-      email: String, 
+      email: String,
+      name: String,
       password: String, 
       passwordRepeat: String, 
       acceptRules: Boolean, 
@@ -47,15 +49,27 @@ object UserController extends Controller {
   val signupForm: Form[SignupData] = Form(
     mapping(
       "email" -> email,
+      "name" -> nonEmptyText(3, 50),
       "password" -> nonEmptyText,
       "password-repeat" -> nonEmptyText,
-      "agreement1" -> checked(Messages("user.validation.rules.must.agree")),
-      "agreement2" -> checked("user.validation.notifications.must.agree")
+      "agreement1" -> checked("user.validation.rules.must.agree"),
+      "agreement2" -> boolean
     )(SignupData.apply)(SignupData.unapply) verifying(verifyPasswords)
   )
     
-  def jsonUsers = Action {
-    Ok(Json.obj("values" -> Json.arr(Json.obj("id" -> 1, "text" -> "Bartek"), Json.obj("id" -> 2, "text" -> "Marek"))))
+  /**
+   * Looking for user names matching given pattern
+   */
+  def jsonUsers = Action { implicit request =>
+    if(request.queryString.contains("q")) {
+	    val q = request.queryString("q").head
+	    Logger.debug(s"Looking for users starting with '${q}'")
+	    val list = Account.idNameOnly(s"%${q}%")
+	    val jsonObjects = list.map(idName => Json.obj("id" -> idName._1, "text" -> idName._2))
+	    Ok(Json.obj("values" -> Json.arr(jsonObjects)))
+    } else {
+      BadRequest("missing required parameter")
+    }
   }
 
   /**
@@ -84,7 +98,7 @@ object UserController extends Controller {
       errors  => BadRequest(views.html.user.signup(errors)),
       success => {
         Logger.debug("Registration form successfully bound")
-        
+        Account.create(success.email, success.name, success.password, NormalUser)
         Redirect(routes.Application.index).flashing("message" -> Messages("account.created"))
       }
     )

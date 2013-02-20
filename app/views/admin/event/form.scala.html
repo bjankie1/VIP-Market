@@ -72,14 +72,15 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function() { $("#entiled_users").select2({
-    /* tags:["red", "green", "blue", "Blue Cantrel"], */
     minimumInputLength: 1,
     multiple: true,
     ajax: {
         url: "@routes.UserController.jsonUsers",
         dataType: 'json',
         data: function (term, page) {
-            return {};
+            return {
+            	q: term
+            };
         },
         results: function (data, page) {
             return {results: data.values};
