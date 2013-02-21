@@ -40,11 +40,13 @@ function disactivateVipLounge(url) {
 		<a href="@routes.VipLoungeController.edit(vipLounge.id.get)">@vipLounge.name</a></td>
 		<td>@vipLounge.seatsNumber</td>
 		<td>
-		@if(vipLounge.active) {
-		  	<a class="btn btn-danger" href="#" onclick="disactivateVipLounge('@routes.VipLoungeController.disactivate(vipLounge.id.get)')">@Messages("disactivate")</a>
-		} else {
-			<a class="btn btn-success" href="#" onclick="activateVipLounge('@routes.VipLoungeController.activate(vipLounge.id.get)')">@Messages("activate")</a>
-		}
+            <div class="btn-group">
+            @if(vipLounge.active) {
+                <a class="btn btn-mini" href="#" onclick="disactivateVipLounge('@routes.VipLoungeController.disactivate(vipLounge.id.get)')">@Messages("disactivate")</a>
+            } else {
+                <a class="btn btn-mini" href="#" onclick="activateVipLounge('@routes.VipLoungeController.activate(vipLounge.id.get)')">@Messages("activate")</a>
+            }
+            </div>
 		</td>
 	</tr>
 }

@@ -39,11 +39,11 @@ object EventController extends BaseController {
 
   val vipLoungesForm: Form[VipLoungesAtEvent] = Form(
     mapping(
-      "lounges" -> Forms.list(mapping(
-        "eventId" -> longNumber,
+      "lounges"    -> Forms.list(mapping(
+        "eventId"     -> longNumber,
         "vipLoungeId" -> longNumber,
-        "basePrice" -> bigDecimal,
-        "active" -> boolean
+        "basePrice"   -> bigDecimal,
+        "active"      -> boolean
       )(VipLoungeAtEvent.apply)(VipLoungeAtEvent.unapply))
     )(VipLoungesAtEvent.apply)(VipLoungesAtEvent.unapply)
   )
@@ -53,13 +53,12 @@ object EventController extends BaseController {
   /**
    * Display the first page with events by default
    */
-  def index: Action[play.api.mvc.AnyContent] = list(1)
+  def index: Action[(play.api.mvc.AnyContent, controllers.EventController.User)] = list(1)
 
   /**
    * List of events sorted by date. There are 20 events returned and the output is pageable
    */
-  def list(page: Int = 1) = Action {
-    implicit request =>
+  def list(page: Int = 1) = authorizedAction(authorizeAdmin) { user => implicit request =>
       Ok(views.html.admin.event.list(
         Event.listByPage(page, 20),
         Event.count

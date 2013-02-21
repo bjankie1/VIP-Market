@@ -5,15 +5,12 @@ import models.NormalUser
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
 import play.api.mvc._
 import play.api.libs.json.Json
-import anorm.NotAssigned
 import play.api.data.validation.Constraint
 import play.api.data.validation.Valid
 import play.api.data.validation.Invalid
 import play.api.i18n.Messages
-import views.html.defaultpages.badRequest
 
 object UserController extends Controller {
 

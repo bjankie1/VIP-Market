@@ -1,9 +1,11 @@
 @(users: Seq[models.Account])
  
-@main("Users")("Lista użytkowników") {
+@main("Users")(Messages("user.list")) {
 <ul> 
-@users.map { user =>
-  <li>@user.name (@user.email)</li>
-}
+    @users.map { user =>
+      <li>
+        @user.name @user.email
+      </li>
+    }
 </ul>
 }

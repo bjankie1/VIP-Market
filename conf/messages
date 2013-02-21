@@ -49,6 +49,7 @@ vip.lounge.create=Dodaj lożę VIP
 vip.lounge.location=Kod na planie obiektu
 vip.lounge.list=Lista lóż
 vip.lounge.add=Dodaj lożę
+vip.lounge.base.price=Cena podstawowa
 
 #Users
 user.name=Imię i nazwisko
@@ -59,4 +60,5 @@ user.notifications.agreement=Chcę otrzymywać powiadomienia związane z procese
 user.password.validation.notmatch=Oba hasła musza być jednakowe
 user.validation.rules.must.agree=Musisz się zgodzić na warunki regulaminu
 user.validation.notifications.must.agree=Musisz się zgodzić na powiadomienia
+user.list=Lista użytkowników
 error.email=Nieprawidłowy adres email

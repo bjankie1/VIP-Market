@@ -11,12 +11,12 @@ import play.api.Logger
  * Sport event.
  * 
  * @param name Name of event
- * @param date Date of event
- * @param eventType Type of sport event
- * @param venue Place where event takes place
- * @param lounges List of available lounges
- * @param photos List of photos related to event description
- * @param sponsorship Sponsorship information
+ * @param description Description of event
+ * @param startDate Start date event
+ * @param eventTypeId Type of the event
+ * @param venueId Id of venue
+ * @param active Is the event active
+ * @param created Date the event object has been created
  */
 case class Event(
     id: Pk[Long], 
@@ -93,7 +93,7 @@ object Event extends AbstractModel {
    * Retrieve a set of events by starting date range
    */
   def listByPage(page: Int, limit: Int): List[Event] = {
-    Logger.info(s"Finding from ${(page -1)*limit} to ${page*limit}")
+    Logger.info(s"Finding events from offset ${(page -1)*limit} to ${page*limit}")
     val sql = """
             select * from event order by start_date LIMIT {limit} OFFSET {offset}
             """

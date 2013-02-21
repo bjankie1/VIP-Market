@@ -5,16 +5,7 @@
 
 @admin.main(Messages("vip.lounge"))(Messages("edit")) {
 
-	@if(vipLoungeForm.hasErrors) {
-		<div class="alert-message error">
-			<p><strong>Oops</strong> Please fix all errors</p>
-			<ul>
-				@vipLoungeForm.errors.map { error =>
-					<li>@error.key @error.message</li>
-				}
-			</ul>
-		</div>
-	}
+	@admin.tags.validationmessage(vipLoungeForm.errors)
   
 	@helper.form(action = routes.VipLoungeController.update(id), 'enctype -> "multipart/form-data") {
    
@@ -35,9 +26,16 @@
             
             @inputText(
                 vipLoungeForm("seatsNumber"), 
-                '_label -> Messages("vip.lounge.seats")
+                '_label -> Messages("vip.lounge.seats"),
+                'type -> "number"
             )
-            
+
+            @inputText(
+                vipLoungeForm("basePrice"),
+                '_label -> Messages("vip.lounge.base.price"),
+                'type -> "number"
+            )
+
             @inputText(
                 vipLoungeForm("locationCode"), 
                 '_label -> Messages("vip.lounge.location")
