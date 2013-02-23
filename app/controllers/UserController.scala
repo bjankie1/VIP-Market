@@ -63,7 +63,7 @@ object UserController extends Controller {
 	    Logger.debug(s"Looking for users starting with '${q}'")
 	    val list = Account.idNameOnly(s"%${q}%")
 	    val jsonObjects = list.map(idName => Json.obj("id" -> idName._1, "text" -> idName._2))
-	    Ok(Json.obj("values" -> Json.arr(jsonObjects)))
+	    Ok(Json.obj("values" -> jsonObjects))
     } else {
       BadRequest("missing required parameter")
     }

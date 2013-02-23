@@ -2,6 +2,7 @@ package controllers
 
 import play.api.data.Forms._
 import play.api._
+import i18n.Messages
 import play.api.data._
 import play.api.mvc._
 import models.Venue
@@ -74,9 +75,12 @@ object VenueController extends BaseController {
       form.bindFromRequest.fold(
         errors => BadRequest(views.html.admin.venue.form(id, errors)),
         venue => {
-          val updated = Venue.update(id, venue)
-          Redirect(routes.VenueController.list).flashing("message" -> "")
-          //Messages("success", venue.name)
+          id match {
+            case -1 => Venue.insert(venue)
+            case _  => Venue.update(id, venue)
+          }
+
+          Redirect(routes.VenueController.list) flashing "message" -> Messages("save.success", venue.name)
         }
       )
   }

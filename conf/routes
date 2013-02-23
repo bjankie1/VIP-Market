@@ -34,6 +34,12 @@ GET     /admin/event/disactivate/:id      controllers.EventController.disactivat
 GET     /admin/event/lounges/:id          controllers.EventController.vipLounges(id: Long)
 POST    /admin/event/lounges/:id          controllers.EventController.updateLounges(id: Long)
 
+# Event
+GET     /admin/eventtype/list             controllers.EventTypeController.list
+GET     /admin/eventtype/edit/:id         controllers.EventTypeController.edit(id: Long)
+POST    /admin/eventtype/edit/:id         controllers.EventTypeController.update(id: Long)
+GET     /admin/eventtype/new              controllers.EventTypeController.create
+
 # Venue
 GET     /admin/venue/list                 controllers.VenueController.list
 GET     /admin/venue/preview/:id          controllers.VenueController.preview(id: Long)

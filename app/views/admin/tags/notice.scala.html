@@ -2,25 +2,25 @@
  
 @level match {
     
-  case "success" => {
-  	<div class="alert alert-block">
-  		<button type="button" class="close" data-dismiss="alert">&times;</button>
-  		<strong>Warning!</strong> @body
-	</div>
-  }
-
   case "warning" => {
   	<div class="alert alert-success">
   		<button type="button" class="close" data-dismiss="alert">&times;</button>
-  		<strong>Warning!</strong> @body
+  		<strong>@Messages("warning")!</strong> @body
 	</div>
   }
 
   case "error" => {
   	<div class="alert alert-error">
   		<button type="button" class="close" data-dismiss="alert">&times;</button>
-  		<strong>Warning!</strong> @body
+  		<strong>@Messages("error")!</strong> @body
 	</div>
+  }
+
+  case default => {
+      <div class="alert alert-block">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          @body
+      </div>
   }
     
 }

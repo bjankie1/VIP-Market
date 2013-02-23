@@ -149,7 +149,7 @@ object Event extends AbstractModel {
           values({name}, {description}, {startDate}, {eventTypeId}, {venueId}, {active}, {created})
       """
     Logger("sql").debug(sql)
-    DB.withConnection(implicit connection => 
+    DB.withConnection(implicit connection =>
       SQL(sql).on(
           'name 		-> event.name,
           'description 	-> event.description,

@@ -1,0 +1,20 @@
+@(eventTypes: List[models.EventType])(implicit flash: Flash)
+
+@admin.main(Messages("event.type"))(Messages("event.type.list")) {
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>@Messages("name")</td>
+            </tr>
+        </thead>
+        @eventTypes.map { eventType =>
+            <tr>
+                <td><a href="@routes.EventTypeController.edit(eventType.id.get)">@eventType.name</a></td>
+            </tr>
+        }
+    </table>
+    <div class="actions">
+        <button class="btn btn-primary"><a href="@routes.EventTypeController.create">@Messages("event.type.create")</a></button>
+    </div>
+}

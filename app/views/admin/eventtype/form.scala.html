@@ -1,0 +1,28 @@
+@(id: Long, eventTypeForm: Form[models.EventType])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main(Messages("event.type"))(Messages("event.type.create")) {
+
+	@admin.tags.validationmessage(eventTypeForm.errors)
+  
+	@helper.form(action = routes.EventTypeController.update(id)) {
+   
+        <fieldset>
+            <legend>@Messages("general.information")</legend>
+            
+            @inputText(
+                eventTypeForm("name"),
+                '_label -> Messages("event.type.name")
+            )
+
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn btn-primary" value="Insert">
+            <a href="@routes.EventTypeController.update(1)" class="btn">Cancel</a>
+        </div>
+     	    
+	}
+}

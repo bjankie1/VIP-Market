@@ -11,9 +11,12 @@ format.boolean=Zaznacz
 general.information=Informacje podstawowe
 name=Nazwa
 preview=Podgląd
-save.success=Udało się zapisać {1}!
+save.success=Udało się zapisać {0}!
 sign.in=Zaloguj się
 signup=Rejestracja
+not.found=Nie znaleziono
+error=Błąd
+warning=Uwaga
 
 rules.agreement=Zgoda na regulamin
 
@@ -30,6 +33,12 @@ event.type=Rodzaj imprezy
 event.create=Nowa impreza
 event.list=Lista imprez
 event.lounges=Loże VIP
+
+#Rodzaje imprez
+event.type.create=Nowy rodzaj imprezy
+event.type.list=Lista rodzajów imprez
+event.type.name=Nazwa rodzaju imprezy
+
 
 # Obiekty
 venue=Obiekt

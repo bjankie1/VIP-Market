@@ -56,6 +56,14 @@
 	  </div>
 	</div>
     <div id="alert_placeholder"></div>
+    @flash.get("message") match {
+        case Some(message) => {
+          @admin.tags.notice("success") {
+              <p>@message</p>
+          }
+        }
+        case None => {}
+    }
     <section id="main">
         @content
     </section>

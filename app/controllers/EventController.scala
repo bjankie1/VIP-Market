@@ -1,6 +1,7 @@
 package controllers
 
 import play.api._
+import i18n.Messages
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
@@ -18,7 +19,7 @@ import models.VipLoungeAtEvent
  */
 object EventController extends BaseController {
 
-  val eventForm: Form[Event] = Form(
+  val eventForm: Form[(Event,List[Long])] = Form(
     mapping(
       "id" -> ignored(NotAssigned: Pk[Long]),
       "name" -> nonEmptyText,
@@ -27,12 +28,13 @@ object EventController extends BaseController {
       "eventTypeId" -> longNumber,
       "venueId" -> longNumber,
       "active" -> boolean,
-      "date" -> ignored(DateTime.now)
-    )(Event.apply)(e => {
-      if (e eq null) None
-      else Some((e.id, e.name, e.description, e.startDate, e.eventTypeId, e.venueId, e.active, e.created))
-    }
-    )
+      "date" -> ignored(DateTime.now),
+      "approvers" -> Forms.list(longNumber))((id, name, description, startDate, eventTypeId, venueId, active, date, approvers) =>
+        (Event(id, name, description, startDate, eventTypeId, venueId, active, date), approvers))(e => {
+          if (e eq null) None
+          else Some((e._1.id, e._1.name, e._1.description, e._1.startDate, e._1.eventTypeId, e._1.venueId, e._1.active, e._1.created,
+            e._2))
+    })
   )
 
   case class VipLoungesAtEvent(lounges: List[VipLoungeAtEvent])
@@ -73,8 +75,12 @@ object EventController extends BaseController {
       eventForm.bindFromRequest.fold(
         errors => BadRequest(views.html.admin.event.form(id, errors, venues)),
         event => {
-          val updated = Event.update(id, event)
-          Ok(views.html.admin.event.summary(updated))
+          id match {
+            case -1l => Event.insert(event._1)
+            case _   => Event.update(id, event._1)
+          }
+          Redirect(routes.EventController.index) flashing "message" -> Messages("save.success", event._1.name)
+          //TODO store approvers from event._2
         }
       )
   }
@@ -132,14 +138,24 @@ object EventController extends BaseController {
 
   def create = Action {
     implicit request =>
-      Ok(views.html.admin.event.form(-1, eventForm.fill(Event.createNew), venues))
+      Ok(views.html.admin.event.form(
+        -1,
+        eventForm.fill(
+          (
+            Event.createNew,
+            List(1l,3l)
+          )
+        ),
+        venues))
   }
 
   def edit(id: Long) = Action {
     implicit request =>
+      Logger.debug(s"Editing event ${id}")
+      //TODO: load list of approvers
       Event.findById(id) match {
         case Some(existing) => Ok(views.html.admin.event.form(
-          existing.id.get, eventForm.fill(existing), venues))
+          existing.id.get, eventForm.fill((existing, Nil)), venues))
         case None => Redirect(routes.EventController.list(1)) flashing "message" -> "Event could not be found"
       }
   }

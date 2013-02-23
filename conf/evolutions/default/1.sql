@@ -13,7 +13,10 @@ create table user (
   permission                varchar(20)  not null
 );
 
-ALTER TABLE user ADD CONSTRAINT email_unique UNIQUE(email);
+ALTER TABLE user ADD CONSTRAINT user_email_unique UNIQUE(email);
+
+ALTER TABLE user ADD CONSTRAINT user_name_unique UNIQUE(name);
+
 
 create table event (
   id                        int(11)      not null primary key auto_increment,
@@ -66,6 +69,12 @@ create table vip_lounge_event (
   primary key(event_id,vip_lounge_id)
 );
 
+create table event_type (
+  id                        int(11) not null primary key auto_increment,
+  name                      varchar(255)  not null
+);
+
+ALTER TABLE event_type ADD CONSTRAINT event_type_name_unique UNIQUE(name);
 
 # --- !Downs
 

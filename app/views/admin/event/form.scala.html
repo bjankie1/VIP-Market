@@ -1,16 +1,19 @@
-@(id: Long, eventForm: Form[models.Event], venues: List[(String,String)])(implicit flash: Flash)
+@(id: Long, eventForm: Form[(models.Event,List[Long])], venues: List[(String,String)])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
 
-@admin.main(Messages("event"))("Nowy event") {
+@admin.main(Messages("event"))(Messages("event.create")) {
 
+    <h1>@eventForm("approvers").indexes.tail.foldLeft(eventForm("approvers").indexes.head.toString)((l,r) => l + "," + r)</h1>
 	@if(eventForm.hasErrors) {
 		<div class="alert-message error">
 			<p><strong>Oops</strong> Please fix all errors</p>
 			<ul>
 				@eventForm.errors.map { error =>
-					<li>@error.key @error.message</li>
+					<li>
+                            @error.key @error.message
+                    </li>
 				}
 			</ul>
 		</div>
@@ -56,7 +59,8 @@
                 '_label -> Messages("active")
             )
             
-            <p><input type="hidden" id="entiled_users" style="width:300px" value="brown"/></p>
+            <p><input name="approvers" type="hidden" id="entiled_users" style="width:300px"
+                value="@eventForm("approvers").value" /></p>
             
         </fieldset>
         
@@ -72,6 +76,7 @@
 <script type="text/javascript">
 <!--
 $(document).ready(function() { $("#entiled_users").select2({
+    placeholder: "Select approvers",
     minimumInputLength: 1,
     multiple: true,
     ajax: {
@@ -86,8 +91,20 @@ $(document).ready(function() { $("#entiled_users").select2({
             return {results: data.values};
         }
     },
+    initSelection: function(element, callback) {
+        var data = [];
+        $(element.val().split(",")).each(function () {
+            data.push({id: this, text: this});
+        });
+        callback(data);
+    },
     escapeMarkup: function (m) { return m; }
     });
 });
 //-->
 </script>
+<style type="text/css">
+  input[type="date"] {
+     width: 130px
+  }
+</style>
