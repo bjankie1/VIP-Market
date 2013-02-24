@@ -24,7 +24,7 @@ object EventController extends BaseController {
       "id" -> ignored(NotAssigned: Pk[Long]),
       "name" -> nonEmptyText,
       "description" -> text(minLength = 10, maxLength = 5000),
-      "startDate" -> jodaDate("yyyy-MM-dd"),
+      "startDate" -> jodaDate("yyyy-MM-dd hh:mm").verifying(Messages("validation.date.must.be.future"), _.isAfterNow),
       "eventTypeId" -> longNumber,
       "venueId" -> longNumber,
       "active" -> boolean,
@@ -52,6 +52,15 @@ object EventController extends BaseController {
 
   def venues = Venue.getAll.map(v => (v.id.get.toString, v.name))
 
+  def eventTypes = EventType.findAll map( et => (et.id.get.toString, et.name))
+
+  /**
+   * Id for file owner attribute generated for given event
+   * @param eventId Event id to generate owner id for
+   * @return Returns id of file owner
+   */
+  def fileOwnerId(eventId: Long) = s"event:${eventId}"
+
   /**
    * Display the first page with events by default
    */
@@ -70,15 +79,24 @@ object EventController extends BaseController {
   /**
    * Update given event loaded from form data
    */
-  def update(id: Long) = Action {
+  def update(id: Long) = Action(parse.multipartFormData) {
     implicit request =>
       eventForm.bindFromRequest.fold(
-        errors => BadRequest(views.html.admin.event.form(id, errors, venues)),
+        errors => BadRequest(views.html.admin.event.form(
+          id,
+          errors,
+          venues,
+          eventTypes
+        )),
         event => {
-          id match {
+          val eventId = id match {
             case -1l => Event.insert(event._1)
-            case _   => Event.update(id, event._1)
+            case _   => {
+              Event.update(id, event._1)
+              id
+            }
           }
+          request.upload(fileOwnerId(eventId))
           Redirect(routes.EventController.index) flashing "message" -> Messages("save.success", event._1.name)
           //TODO store approvers from event._2
         }
@@ -146,19 +164,32 @@ object EventController extends BaseController {
             List(1l,3l)
           )
         ),
-        venues))
+        venues,
+        eventTypes
+      ))
   }
 
+  /**
+   * Edit event action.
+   * @param id Identifier of event
+   * @return Returns related action
+   */
   def edit(id: Long) = Action {
     implicit request =>
       Logger.debug(s"Editing event ${id}")
       //TODO: load list of approvers
       Event.findById(id) match {
         case Some(existing) => Ok(views.html.admin.event.form(
-          existing.id.get, eventForm.fill((existing, Nil)), venues))
+          existing.id.get,
+          eventForm.fill((existing, Nil)),
+          venues,
+          eventTypes
+        ))
         case None => Redirect(routes.EventController.list(1)) flashing "message" -> "Event could not be found"
       }
   }
+
+  def photos(eventId: Long) = FileController.editFiles(fileOwnerId(eventId))
 
   def find = TODO
 
@@ -173,4 +204,5 @@ object EventController extends BaseController {
       Event.activate(id, false)
       Ok("wstrzymana impreza")
   }
+
 }

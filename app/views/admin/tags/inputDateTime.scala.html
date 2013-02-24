@@ -1,0 +1,35 @@
+@(field: Field, _label: String = "", _class: String = "")
+
+<div class="clearfix @_class @if(field.hasErrors) {error}" id="@{field.id}_field">
+    <label for="@{field.id}_field">@_label</label>
+    <div class="input">
+        <div id="@field.id" class="input-append date">
+            <input
+                name="@field.name"
+                id="@{field.id}_field"
+                data-format="yyyy-MM-dd hh:mm"
+                type="text"
+                value="@field.value" ></input>
+            <span class="add-on">
+                <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                </i>
+            </span>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $('#@field.id').datetimepicker({
+            language: 'en-UK'
+        }).on('changeDate', function(e) {
+            console.log(e.date.toString());
+            console.log(e.localDate.toString());
+        });
+    });
+</script>
+<style >
+    #@{field.id}_field {
+        width: 180px
+    }
+</style>

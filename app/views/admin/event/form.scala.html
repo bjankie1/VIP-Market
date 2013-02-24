@@ -1,110 +1,141 @@
-@(id: Long, eventForm: Form[(models.Event,List[Long])], venues: List[(String,String)])(implicit flash: Flash)
+@(id: Long,
+    eventForm: Form[(models.Event,List[Long])],
+    venues: List[(String,String)],
+    eventTypes: List[(String,String)]
+)(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
 
-@admin.main(Messages("event"))(Messages("event.create")) {
+@scripts = {
+    <script src="@routes.Assets.at("javascripts/select2.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap-datetimepicker.min.js")" type="text/javascript"></script>
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/select2.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-datetimepicker.min.css")">
+}
 
-    <h1>@eventForm("approvers").indexes.tail.foldLeft(eventForm("approvers").indexes.head.toString)((l,r) => l + "," + r)</h1>
-	@if(eventForm.hasErrors) {
-		<div class="alert-message error">
-			<p><strong>Oops</strong> Please fix all errors</p>
-			<ul>
-				@eventForm.errors.map { error =>
-					<li>
-                            @error.key @error.message
-                    </li>
-				}
-			</ul>
-		</div>
-	}
+@admin.main(Messages("event"), scripts)(Messages("event.create")) {
+	@admin.tags.validationmessage(eventForm.errors)
   
-	@helper.form(action = routes.EventController.update(id)) {
+	@helper.form(action = routes.EventController.update(id), 'enctype -> "multipart/form-data") {
    
         <fieldset>
             <legend>@Messages("general.information")</legend>
-            
-            @inputText(
-                eventForm("name"), 
-                '_label -> Messages("event.name")
-            )
-            
-            @textarea(
-                eventForm("description"), 
-                '_label -> Messages("event.description"),
-                'rows -> 3,
-                'cols -> 70
-            )
-            
-            @inputDate(
-                eventForm("startDate"), 
-                '_label -> Messages("event.startdate")
-            )
-            
-            @select(
-            	eventForm("eventTypeId"),
-            	options("1" -> "Pilka", "2" -> "Siatka"),
-            	'_label -> Messages("event.type")
-            )
-            
-            @select(
-            	eventForm("venueId"),
-            	venues,
-            	'_label -> Messages("venue")
-            )
-            
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span8">
+                        @inputText(
+                            eventForm("name"),
+                            '_label -> Messages("event.name"),
+                            '_showConstraints -> false
+                        )
+                    </div>
+                    <div class="span1">
+                            @admin.tags.inputDateTime(
+                                field = eventForm("startDate"),
+                                _label = Messages("event.startdate")
+                            )
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span12">
+                        @textarea(
+                            eventForm("description"),
+                            '_label -> Messages("event.description"),
+                            'rows -> 20,
+                            'cols -> 100
+                            )
+                    </div>
+                </div>
 
-            @checkbox(
-                eventForm("active"), 
-                '_label -> Messages("active")
-            )
-            
-            <p><input name="approvers" type="hidden" id="entiled_users" style="width:300px"
-                value="@eventForm("approvers").value" /></p>
-            
+                <div class="row-fluid">
+                    <div class="span3">
+                        @select(
+                            eventForm("eventTypeId"),
+                            eventTypes,
+                            '_label -> Messages("event.type"),
+                            '_showConstraints -> false
+                        )
+                    </div>
+                    <div class="span3">
+                        @select(
+                            eventForm("venueId"),
+                            venues,
+                            '_label -> Messages("venue"),
+                            '_showConstraints -> false
+                        )
+                    </div>
+                    <div class="span3">
+                        @checkbox(
+                            eventForm("active"),
+                            '_label -> Messages("active"),
+                            '_showConstraints -> false
+                        )
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span8">
+                        @inputText(
+                            eventForm("approvers"),
+                            '_label           -> Messages("event.name"),
+                            '_showConstraints -> false,
+                            'type             -> "hidden"
+                        )
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span8">
+                        @admin.tags.files("pictures")
+                    </div>
+                </div>
+            </div>
         </fieldset>
-        
+
+
         <div class="actions">
-            <input type="submit" class="btn btn-primary" value="Insert">
+            <input type="submit" class="btn btn-primary" value="@if(id == -1){Insert}else{Update}">
             <a href="@routes.EventController.list(1)" class="btn">Cancel</a>
         </div>
      	    
 	}
 }
-<link rel="stylesheet" href="@routes.Assets.at("stylesheets/select2.css")">
-<script src="@routes.Assets.at("javascripts/select2.js")" type="text/javascript"></script>
+
 <script type="text/javascript">
 <!--
-$(document).ready(function() { $("#entiled_users").select2({
-    placeholder: "Select approvers",
-    minimumInputLength: 1,
-    multiple: true,
-    ajax: {
-        url: "@routes.UserController.jsonUsers",
-        dataType: 'json',
-        data: function (term, page) {
-            return {
-            	q: term
-            };
+$(document).ready(function() {
+    $("#approvers").select2({
+        placeholder: "@Messages("event.select.approvers")",
+        minimumInputLength: 1,
+        multiple: true,
+        ajax: {
+            url: "@routes.UserController.jsonUsers",
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return {results: data.values};
+            }
         },
-        results: function (data, page) {
-            return {results: data.values};
-        }
-    },
-    initSelection: function(element, callback) {
-        var data = [];
-        $(element.val().split(",")).each(function () {
-            data.push({id: this, text: this});
+        initSelection: function(element, callback) {
+            var data = [];
+            $(element.val().split(",")).each(function () {
+                data.push({id: this, text: this});
+            });
+            callback(data);
+        },
+        escapeMarkup: function (m) { return m; }
         });
-        callback(data);
-    },
-    escapeMarkup: function (m) { return m; }
-    });
 });
 //-->
 </script>
-<style type="text/css">
-  input[type="date"] {
-     width: 130px
-  }
+
+<style>
+    input, textarea {
+        width: 100%
+    }
+
 </style>

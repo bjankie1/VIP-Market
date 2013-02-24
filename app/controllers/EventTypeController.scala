@@ -14,7 +14,7 @@ import models.VipLoungeAtEvent
 /**
  * Controller of event type related actions.
  * User: Bartosz Jankiewicz
- * Date: 1/20/13
+ * Date: 2/22/13
  * Time: 9:07 PM
  */
 object EventTypeController extends BaseController {

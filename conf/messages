@@ -17,15 +17,21 @@ signup=Rejestracja
 not.found=Nie znaleziono
 error=Błąd
 warning=Uwaga
-
 rules.agreement=Zgoda na regulamin
+date=Data
+photos=Zdjęcia
+
+#Validation
+validation.date.must.be.future=Data musi odnosić się do przyszłości
 
 #Files
 files=Pliki
 files.list=Lista plików
 
+
 #Imprezy
 event=Impreza
+event.plural=Imprezy
 event.name=Nazwa imprezy
 event.description=Opis
 event.startdate=Rozpoczęcie
@@ -33,6 +39,7 @@ event.type=Rodzaj imprezy
 event.create=Nowa impreza
 event.list=Lista imprez
 event.lounges=Loże VIP
+event.select.approvers=Wybierz zatwierdzających
 
 #Rodzaje imprez
 event.type.create=Nowy rodzaj imprezy
@@ -42,6 +49,7 @@ event.type.name=Nazwa rodzaju imprezy
 
 # Obiekty
 venue=Obiekt
+venue.create=Nowy obiekt
 venue.list=Lista obiektów
 venue.name=Nazwa obiektu
 venue.description=Opis
@@ -52,7 +60,7 @@ venue.active=Aktywny
 
 #VIP Lounge
 vip.lounge=Loża VIP
-vip.lounges=Loże VIP
+vip.lounge.plural=Loże VIP
 vip.lounge.seats=Liczba miejsc
 vip.lounge.create=Dodaj lożę VIP
 vip.lounge.location=Kod na planie obiektu

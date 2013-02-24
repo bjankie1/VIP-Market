@@ -5,6 +5,7 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET     /login                      controllers.Application.login
 POST    /login                      controllers.Application.authenticate
 GET     /logout                     controllers.Application.logout
 
@@ -33,6 +34,7 @@ GET     /admin/event/activate/:id         controllers.EventController.activate(i
 GET     /admin/event/disactivate/:id      controllers.EventController.disactivate(id: Long)
 GET     /admin/event/lounges/:id          controllers.EventController.vipLounges(id: Long)
 POST    /admin/event/lounges/:id          controllers.EventController.updateLounges(id: Long)
+GET     /admin/event/photos/:id           controllers.EventController.photos(id: Long)
 
 # Event
 GET     /admin/eventtype/list             controllers.EventTypeController.list
@@ -44,6 +46,7 @@ GET     /admin/eventtype/new              controllers.EventTypeController.create
 GET     /admin/venue/list                 controllers.VenueController.list
 GET     /admin/venue/preview/:id          controllers.VenueController.preview(id: Long)
 GET     /admin/venue/edit/:id             controllers.VenueController.edit(id: Long)
+GET     /admin/venue/new                  controllers.VenueController.create
 POST    /admin/venue/update/:id           controllers.VenueController.update(id: Long)
 
 GET    /admin/wiki                        controllers.VenueController.wiki
@@ -63,3 +66,4 @@ GET     /file/:id                   controllers.FileController.load(id)
 POST    /upload                     controllers.FileController.upload
 POST    /pictures                   controllers.FileController.pictures
 GET     /upload                     controllers.FileController.add
+GET     /thumbnail/:id              controllers.FileController.scaledImage(id: String)

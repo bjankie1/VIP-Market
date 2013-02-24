@@ -23,7 +23,9 @@ case class Venue(
 }
     
 object Venue extends AbstractModel {
-  
+  def create: Venue = Venue(NotAssigned, "", "", Address("","", Country("")), false, DateTime.now())
+
+
   // -- Parsers
 
   /**

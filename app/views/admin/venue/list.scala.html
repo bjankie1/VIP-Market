@@ -19,15 +19,19 @@
 			<td>@venue.address.city</td>
 			<td>
 				<div class="btn-group">
-					<button class="btn btn-mini"><a href="@routes.VipLoungeController.create(venue.id.get)">@Messages("vip.lounge.create")</a></button>
-					<button class="btn btn-mini"><a href="@routes.VipLoungeController.list(venue.id.get)">@Messages("vip.lounge.list")</a></button>
-					<button class="btn btn-mini"><a data-toggle="modal" href="@routes.VenueController.preview(venue.id.get)" data-target="#venuePreviewModal">@Messages("preview")</a></button>
+					<a class="btn btn-mini" href="@routes.VipLoungeController.create(venue.id.get)">@Messages("vip.lounge.create")</a>
+					<a class="btn btn-mini" href="@routes.VipLoungeController.list(venue.id.get)">@Messages("vip.lounge.list")</a>
+					<a class="btn btn-mini" data-toggle="modal" href="@routes.VenueController.preview(venue.id.get)" data-target="#venuePreviewModal">@Messages("preview")</a>
 				</div>
 			</td>
 		</tr>
 	}
 	</table>
-	 
+
+    <div class="actions">
+        <a href="@routes.VenueController.create" class="btn btn-primary">@Messages("venue.create")</a>
+    </div>
+
 	<!-- Preview modal -->
 	<div id="venuePreviewModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-header">

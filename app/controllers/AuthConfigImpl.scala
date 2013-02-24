@@ -77,7 +77,7 @@ trait AuthConfigImpl extends AuthConfig {
    */
   def authenticationFailed(request: RequestHeader): Result = {
     Logger.debug("failed authenticating user")
-    Redirect(routes.Application.index).withSession("access_uri" -> request.uri)
+    Redirect(routes.Application.login).withSession("access_uri" -> request.uri)
   }
 
   /**

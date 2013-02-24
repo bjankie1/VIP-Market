@@ -1,16 +1,17 @@
-@(venueId: Long, vipLounges: List[models.VipLounge])(implicit flash: Flash)
-
-@import helper._
-@import helper.twitterBootstrap._
+@(venue: models.Venue, vipLounges: List[models.VipLounge])(implicit flash: Flash)
 
 @admin.main(Messages("vip.lounge"))(Messages("vip.lounge.list")) {
-  @if(vipLounges.size > 0) {
-  	@table(vipLounges)
-  } else {
-    @admin.tags.notice("warning") {
-      "Nie ma dodanych lóż VIP do obiektu."
+    <ul class="breadcrumb">
+        <li> <a href="@routes.VenueController.edit(venue.id.get)">@venue.name</a> <span class="divider"> / </span> </li>
+        <li class="active"> @Messages("vip.lounge.plural") </li>
+    </ul>
+    @if(vipLounges.size > 0) {
+        @table(vipLounges)
+    } else {
+        @admin.tags.notice("warning") {
+            "Nie ma dodanych lóż VIP do obiektu."
+        }
     }
-  }
-  
-  <a class="btn btn-primary" href="@routes.VipLoungeController.create(venueId)">@Messages("vip.lounge.add")</a>
+
+    <a class="btn btn-primary" href="@routes.VipLoungeController.create(venue.id.get)"> @Messages("vip.lounge.add") </a>
 }

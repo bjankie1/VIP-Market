@@ -7,33 +7,60 @@
 	<table class="table table-hover">
 		<thead>
 			<tr>
-				<td>@Messages("name")</td>
+				<td>@Messages("event")</td>
+                <td>@Messages("date")</td>
 				<td>@Messages("actions")</td>
 			</tr>
 		</thead>
 	@events.map { event =>
 		<tr>
 			<td><a href="@routes.EventController.edit(event.id.get)">@event.name</a></td>
+            <td>@event.startDate.toString("yyyy-MM-dd hh:mm")</td>
 			<td>
 				<div class="btn-group">
-					<button class="btn btn-mini"><a href="@routes.EventController.vipLounges(event.id.get)">@Messages("event.lounges")</a></button>
+					<a class="btn btn-mini" href="@routes.EventController.vipLounges(event.id.get)">@Messages("event.lounges")</a>
+                    <a class="btn btn-mini" data-toggle="modal" href="@routes.EventController.photos(event.id.get)" data-target="#filesModal">@Messages("photos")</a>
 				</div>
 			</td>
 		</tr>
 	}
 	</table>
+
     <div class="actions">
-	    <button class="btn btn-primary"><a href="@routes.EventController.create">@Messages("event.create")</a></button>
+	    <a href="@routes.EventController.create" class="btn btn-primary">@Messages("event.create")</a>
     </div>
 
-	<div class="pagination">
-	  <ul>
-	    <li><a href="#">Prev</a></li>
-	    <li><a href="#">1</a></li>
-	    <li><a href="#">2</a></li>
-	    <li><a href="#">3</a></li>
-	    <li><a href="#">4</a></li>
-	    <li><a href="#">Next</a></li>
-	  </ul>
-	</div>
+
+    <!-- Preview modal -->
+    <div id="filesModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">@Messages("preview")</h3>
+        </div>
+        <div class="modal-body">
+            <p>One fine body…</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+    <!--
+	$(function() {
+		$("a[data-target=#filesModal]").click(function(ev) {
+			ev.preventDefault();
+		    var target = $(source).attr("remote");
+                alert(target)
+                // load the url and show modal on success
+                $("#filesModal .modal-body").load(target, function() {
+                $("#filesModal").modal("show");
+                });
+            });
+            $('#filesModal').on('hidden', function() {
+            $(this).removeData('modal');
+        });
+    });
+    //-->
+</script>
+
 }

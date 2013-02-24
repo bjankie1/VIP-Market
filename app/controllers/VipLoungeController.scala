@@ -44,14 +44,15 @@ object VipLoungeController extends BaseController {
   )
 
   def list(venueId: Long) = Action { implicit request =>
-    Logger("controller").info("Displaying vipLounges")
     val vipLounges = VipLounge.findByVenue(venueId)
-    Logger("controller").info(s"loaded ${vipLounges.size} vip lounges for venue ${venueId}")
-    Ok(views.html.admin.viplounge.list(venueId, vipLounges))
+    val venueOpt = Venue.findById(venueId)
+    venueOpt match {
+      case Some(venue) => Ok(views.html.admin.viplounge.list(venue, vipLounges))
+      case _           => NotFound
+    }
   }
 
   def edit(id: Long) = Action { implicit request =>
-    Logger("controller").info(s"Editing VIP Lounge ${id}")
     VipLounge.findById(id) match {
       case Some(existing) => Ok(views.html.admin.viplounge.form( 
           existing.id.get, 
@@ -66,8 +67,7 @@ object VipLoungeController extends BaseController {
    * Initiate form with new VIP lounge for given venue
    */
   def create(venueId: Long) = Action { implicit request =>
-    Logger("controller").info(s"Creating VIP Lounge for venue ${venueId}")
-    Ok(views.html.admin.viplounge.form( 
+    Ok(views.html.admin.viplounge.form(
           -1, 
           form.fill(VipLounge.createVipLounge(venueId)),
           Venue.getAll.map(v => v.id.get.toString -> v.name)

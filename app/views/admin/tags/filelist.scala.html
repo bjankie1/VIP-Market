@@ -1,0 +1,18 @@
+@(files: List[models.File])
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <td>@Messages("name")</td>
+            <td>@Messages("actions")</td>
+        </tr>
+    </thead>
+    @files.map { file =>
+        <tr>
+            <td><a href="#">@file.name</a></td>
+            <td>
+                <img src="@routes.FileController.scaledImage(file.id.toString)">
+            </td>
+        </tr>
+    }
+</table>

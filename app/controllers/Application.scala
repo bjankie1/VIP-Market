@@ -4,11 +4,8 @@ import play.api._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc._
-import play.api.Play.current
-import play.api.data.validation.Constraints._
 import models.Account
 import jp.t2v.lab.play20.auth.{LoginLogout, Auth}
-import jp.t2v.lab.play20.auth.CookieUtil
 
 object Application extends Controller with LoginLogout with Auth with AuthConfigImpl {
 
@@ -19,15 +16,15 @@ object Application extends Controller with LoginLogout with Auth with AuthConfig
       .verifying("Invalid email or password", result => result.isDefined)
   }
 
-  def index = optionalUserAction{ maybeUser => request =>
-    Logger.debug(s"user ${maybeUser}")
-    maybeUser match {
-      case None       => Ok(views.html.index("SportsMarket"))
-      case Some(user) => Ok(views.html.index(s"SportsMarket ${user.email}"))
-    }
+  def index = optionalUserAction{ implicit maybeUser => request =>
+    Ok(views.html.index(maybeUser))
   }
-  
-  /** 
+
+  def login = Action { implicit request =>
+    Ok(views.html.login())
+  }
+
+  /**
    * Return the `gotoLogoutSucceeded` method's result in the logout action.
    *
    * Since the `gotoLogoutSucceeded` returns `PlainResult`, 
@@ -46,7 +43,7 @@ object Application extends Controller with LoginLogout with Auth with AuthConfig
     loginForm.bindFromRequest.fold(
       formWithErrors => {
         Logger.warn(s"Authentication failed ${formWithErrors.errors.foldLeft("::")((a,b) => a + b.message)}")
-        BadRequest(views.html.login(formWithErrors))
+        BadRequest(views.html.login())
       },
       user => {
         Logger.info("bound login form values")

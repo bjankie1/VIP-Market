@@ -1,24 +1,34 @@
-<fieldset>
-	<legend>Attachments:</legend>
-	<div class="container">
-		<div  id="files">
-			<div class="row">
-				<div class="span0"><a href="#" onclick="removeFile(this,event);return false;" class="icon-remove"></a></div>
-				<div class="span3"><input class="fileupload" type="file" name="pictures[]" ></div>
-			</div>
-		</div>
-	    <button class="btn btn-primary" onclick="addFile();return false;">@Messages("add")</button>
-    </div>
-    
-</fieldset>
+@(name: String)
+<legend>Attachments:</legend>
+
+<div class="row-fluid" id="files">
+    @for(num <- Range(0, 4)) {
+        <div class="span3">
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+                    <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+                    </div>
+                <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
+                <div>
+                    <span class="btn btn-file">
+                    <span class="fileupload-new">Select image</span>
+                    <span class="fileupload-exists">Change</span>
+                        <input type="file" name="@{name}[]"/>
+                    </span>
+                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!--
+<button class="btn btn-primary" onclick="addFile();return false;">@Messages("add")</button>
+-->
 
 <script type="text/javascript">
 <!--
 function addFile() {
 	$("#files").append("<div class=\"row\"><input type=\"file\" name=\"pictures[]\"></div>");
-}
-function removeFile(source) {
-	$(source).closest('.row').remove();
 }
 //-->
 </script>

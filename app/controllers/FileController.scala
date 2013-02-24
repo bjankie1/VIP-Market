@@ -16,7 +16,20 @@ import play.api.libs.Files.TemporaryFile
 
 object FileController extends BaseController {
 
-  
+  def editFiles(ownerId: String) = Action { implicit request =>
+    val files = File.findByOwner(ownerId)
+    Ok(views.html.admin.tags.filelist(files))
+  }
+
+  def scaledImage(id: String) = Action {
+    val stream = File.resize(UUID.fromString(id), 100, 100)
+    SimpleResult(
+      header = ResponseHeader(200),
+      body = Enumerator.fromStream(stream)
+    )
+  }
+
+
   def list = Action { implicit request =>
     Ok(views.html.admin.files( File.list))
   }

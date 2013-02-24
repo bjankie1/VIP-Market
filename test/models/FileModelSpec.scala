@@ -20,6 +20,18 @@ class FileModelSpec extends Specification {
         id must be_!=(false)
       }
     }
+
+    "find files by owner" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val file = java.io.File.createTempFile("test", "file")
+        val id = File.store("test file", "tester", file)
+        Logger.info(id.toString())
+        val files = File.findByOwner("tester")
+        id must be_!=(false)
+        files.size must beEqualTo(1)
+      }
+    }
+
   }
   
 }

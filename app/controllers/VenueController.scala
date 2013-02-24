@@ -55,18 +55,23 @@ object VenueController extends BaseController {
   )
 
   def list = authorizedAction(authorizeAdmin) { user => implicit request =>
-      Logger("controller").info("Displaying venues")
       val venues = Venue.getAll
       Logger("controller").info(s"loaded ${venues.size} venues")
       Ok(views.html.admin.venue.list(venues))
   }
 
   def edit(id: Long) = authorizedAction(authorizeAdmin) { user => implicit request =>
-      Logger("controller").info(s"Editing venue ${id}")
       Venue.findById(id) match {
         case Some(existing) => Ok(views.html.admin.venue.form(existing.id.get, form.fill(existing)))
         case None => Redirect(routes.VenueController.list) flashing "message" -> "Venue could not be found"
       }
+  }
+
+  def create = authorizedAction(authorizeAdmin) { user => implicit request =>
+      Ok(views.html.admin.venue.form(
+        -1l,
+        form.fill(Venue.create)
+      ))
   }
 
   def update(id: Long) = Action {
@@ -86,7 +91,6 @@ object VenueController extends BaseController {
   }
 
   def preview(id: Long) = Action {
-    Logger("controller").info(s"Previewing venue ${id}")
     Venue.findById(id) match {
       case Some(existing) => Ok(views.html.admin.venue.preview(existing))
       case None => Redirect(routes.VenueController.list) flashing "message" -> "Venue could not be found"
