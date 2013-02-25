@@ -1,6 +1,5 @@
 package views.html.helper
 
-import views.html.helper.{FieldElements, FieldConstructor}
 
 /**
  * Created with IntelliJ IDEA.

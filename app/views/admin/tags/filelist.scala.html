@@ -3,15 +3,22 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <td>@Messages("name")</td>
-            <td>@Messages("actions")</td>
+            <td>@Messages("actions")<td>
+            <td>@Messages("preview")</td>
         </tr>
     </thead>
     @files.map { file =>
         <tr>
-            <td><a href="#">@file.name</a></td>
             <td>
-                <img src="@routes.FileController.scaledImage(file.id.toString)">
+                <div class="btn-group btn-group-vertical">
+                    <a class="btn btn-mini" href="@routes.FileController.remove(file.id.toString)">@Messages("remove")</a>
+                    <a class="btn btn-mini" href="@routes.FileController.remove(file.id.toString)">@Messages("move.up")</a>
+                </div>
+            </td>
+            <td>
+            <td>
+                <img class="img-rounded" src="@routes.FileController.scaledImage(file.id.toString)">
+                <div class="help-block">@file.name</div>
             </td>
         </tr>
     }

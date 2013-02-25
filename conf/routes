@@ -67,3 +67,4 @@ POST    /upload                     controllers.FileController.upload
 POST    /pictures                   controllers.FileController.pictures
 GET     /upload                     controllers.FileController.add
 GET     /thumbnail/:id              controllers.FileController.scaledImage(id: String)
+GET     /file/remove/:id            controllers.FileController.remove(id: String)

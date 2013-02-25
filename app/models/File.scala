@@ -71,6 +71,8 @@ case class S3File(id: UUID, name: String, size: Long, originalName: String, owne
   
   def delete = {
     Logger.info(s"Deleting file ${name} from S3 storage")
+    //TODO delete from storage
+    File.delete(id)
   }
   
   def storage = "s3"
@@ -97,6 +99,7 @@ case class LocalFile(id: UUID, name: String, size: Long, originalName: String, o
   def delete = {
     Logger.info(s"Deleting file $id - $name from storage")
     toFile(id).delete()
+    File.delete(id)
   }
   
   def storage = "local"
@@ -187,6 +190,46 @@ object File {
       ).as(simple *)
     }
   }
+
+  def load(id: UUID): Option[File] = {
+    Logger.info(s"Loading file ${id}")
+    val sql = """
+      select * from file_info where id = {id}
+              """
+    Logger("sql").debug(sql)
+    DB.withConnection{ implicit connection =>
+      SQL(sql).on(
+        'id -> id.toString()
+      ).as(File.simple.singleOpt)
+    }
+  }
+
+  def asStream(id: UUID): Option[(Long, InputStream)] = {
+    val fileInfo = File.load(id)
+    fileInfo match {
+      case Some(file)  => Some((file.size, file.asStream))
+      case None        => None
+    }
+  }
+
+  def resize( id: UUID, width: Int, height: Int): InputStream = {
+    val idStream = asStream(id)
+    idStream match {
+      case Some((size, stream)) => resize(stream, width, height)
+      case None => throw new Exception("Not found")
+    }
+  }
+
+  def resize(is: InputStream, width: Int, height: Int): InputStream = {
+    val op = new ResampleOp( 100, 100)
+    val image = ImageIO.read(is)
+    val rescaled = op.filter(image, null)
+    val baos = new ByteArrayOutputStream()
+    ImageIO.write(rescaled, "PNG", baos)
+    new ByteArrayInputStream(baos.toByteArray)
+  }
+
+
   // -- DB store
   
   def insert(file: File, originalFile: java.io.File) {
@@ -220,42 +263,18 @@ object File {
     fileObject.id
   }
   
-  def load(id: UUID): Option[File] = {
-    Logger.info(s"Loading file ${id}")
-    val sql = """
-      select * from file_info where id = {id}
+  def delete(id: UUID) {
+    Logger.debug(s"Deleting file $id info from database")
+    val sql =
       """
+        |delete from file_info
+        |where id = {id}
+      """.stripMargin
     Logger("sql").debug(sql)
-    DB.withConnection{ implicit connection =>
+    DB.withConnection { implicit connection =>
       SQL(sql).on(
-        'id -> id.toString()
-      ).as(File.simple.singleOpt)
+        'id -> id.toString
+      ).executeUpdate()
     }
   }
-  
-  def asStream(id: UUID): Option[(Long, InputStream)] = {
-    val fileInfo = File.load(id)
-    fileInfo match {
-      case Some(file)  => Some((file.size, file.asStream))
-      case None        => None
-    }
-  }
-
-  def resize( id: UUID, width: Int, height: Int): InputStream = {
-    val idStream = asStream(id)
-    idStream match {
-      case Some((size, stream)) => resize(stream, width, height)
-      case None => throw new Exception("Not found")
-    }
-  }
-
-  def resize(is: InputStream, width: Int, height: Int): InputStream = {
-    val op = new ResampleOp( 100, 100)
-    val image = ImageIO.read(is)
-    val rescaled = op.filter(image, null)
-    val baos = new ByteArrayOutputStream()
-    ImageIO.write(rescaled, "PNG", baos)
-    new ByteArrayInputStream(baos.toByteArray)
-  }
-
 }

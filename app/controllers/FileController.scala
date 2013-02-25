@@ -59,7 +59,11 @@ object FileController extends BaseController {
         "error" -> "Missing file")
     }
   }
-  
+
+  def remove(id: String) = authorizedAction(authorizeAdmin) { user => implicit request =>
+    Ok("")
+  }
+
   def pictures = UploadPictures("general") { implicit request =>
     Logger.info("Uploading pictures")
     Ok(s"uploaded ${request.files.size} files")
