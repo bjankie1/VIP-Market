@@ -19,7 +19,7 @@ import models.VipLoungeAtEvent
  */
 object EventController extends BaseController {
 
-  val eventForm: Form[(Event,List[Long])] = Form(
+  val eventForm: Form[(Event,String)] = Form(
     mapping(
       "id" -> ignored(NotAssigned: Pk[Long]),
       "name" -> nonEmptyText,
@@ -29,7 +29,8 @@ object EventController extends BaseController {
       "venueId" -> longNumber,
       "active" -> boolean,
       "date" -> ignored(DateTime.now),
-      "approvers" -> Forms.list(longNumber))((id, name, description, startDate, eventTypeId, venueId, active, date, approvers) =>
+      "approvers" -> text.verifying("event.select.approvers.invalid", a => a.split(",").forall(_.matches("\\d+")))
+    )((id, name, description, startDate, eventTypeId, venueId, active, date, approvers) =>
         (Event(id, name, description, startDate, eventTypeId, venueId, active, date), approvers))(e => {
           if (e eq null) None
           else Some((e._1.id, e._1.name, e._1.description, e._1.startDate, e._1.eventTypeId, e._1.venueId, e._1.active, e._1.created,
@@ -80,12 +81,7 @@ object EventController extends BaseController {
     implicit request =>
       Ok(views.html.admin.event.form(
         -1,
-        eventForm.fill(
-          (
-            Event.createNew,
-            List(1l,3l)
-            )
-        ),
+        eventForm.fill( (Event.createNew, "")),
         venues,
         eventTypes
       ))
@@ -100,10 +96,16 @@ object EventController extends BaseController {
     implicit request =>
       Logger.debug(s"Editing event ${id}")
       val approvers = EventApprover.approversForEvent(id)
+      Logger.debug(s"approvers $approvers")
+      val approverIds = approvers match {
+        case Nil => ""
+        case _   => approvers.map(_.userId.toString).mkString(",")
+      }
+
       Event.findById(id) match {
         case Some(existing) => Ok(views.html.admin.event.form(
           existing.id.get,
-          eventForm.fill((existing, approvers.map(_.userId))),
+          eventForm.fill((existing, approverIds)),
           venues,
           eventTypes
         ))
@@ -131,7 +133,7 @@ object EventController extends BaseController {
               id
             }
           }
-          EventApprover.replace(eventId, event._2)
+          EventApprover.replace(eventId, event._2.split(",").map(_.toLong))
           request.upload(fileOwnerId(eventId))
           Redirect(routes.EventController.index) flashing "message" -> Messages("save.success", event._1.name)
         }

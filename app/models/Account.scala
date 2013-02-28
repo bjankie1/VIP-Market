@@ -22,7 +22,7 @@ case class Account(
   permission: Permission)
 
 object Account extends AbstractModel {
-  
+
   val SEED_SIZE = 10
 
   def apply(email: String, name: String): Account =
@@ -80,12 +80,24 @@ object Account extends AbstractModel {
     * Retrieve a User from email.
     */
   def findByEmail(email: String): Option[Account] = {
+    val sql = "select * from user where email = {email}"
+    Logger("sql").debug(sql)
     DB.withConnection {
       (implicit connection =>
-        SQL("select * from user where email = {email}").on(
+        SQL(sql).on(
           'email -> email).as(Account.simple.singleOpt))
     }
   }
+
+  def findById(id: Long) = {
+    val sql = "select * from user where id = {id}"
+    DB.withConnection {
+      (implicit connection =>
+        SQL(sql).on(
+          'id -> id).as(Account.simple.singleOpt))
+    }
+  }
+
 
   /**
     * Retrieve all users.

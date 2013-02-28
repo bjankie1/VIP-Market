@@ -1,15 +1,9 @@
 @(id: Long,
-    eventForm: Form[(models.Event,List[Long])],
+    eventForm: Form[(models.Event,String)],
     venues: List[(String,String)],
     eventTypes: List[(String,String)]
 )(implicit flash: Flash)
 
-
-@approvers = {
-    @eventForm("approvers").indexes.map { index => @eventForm(s"approvers[$index]").value }.reduceLeft { (acc, n) =>
-        @acc, @n
-    }
-}
 
 @import helper._
 @import helper.twitterBootstrap._
@@ -83,8 +77,8 @@
                 <div class="row-fluid">
                     <div class="span8">
                         <label for="@{eventForm("approvers").id}">@Messages("event.select.approvers")</label>
-                        <input id="@{eventForm("approvers").id}" type="hidden" name="@{eventForm("approvers").name}[]"
-                            value="@{approvers.toString().trim()}">
+                        <input id="@{eventForm("approvers").id}" type="hidden" name="@{eventForm("approvers").name}"
+                            value="@{eventForm("approvers").value}">
                     </div>
                 </div>
                 <div class="row-fluid">
@@ -124,11 +118,18 @@ $(document).ready(function() {
             }
         },
         initSelection: function(element, callback) {
-            var data = [];
+            var result = [];
             $(element.val().split(",")).each(function () {
-                data.push({id: this, text: "test"});
+
+                $.ajax("@routes.UserController.jsonUserName()", {
+                    data: {q: this},
+                    dataType: "json",
+                    async: false
+                }).done(function(data) { result.push({id: this, text: data.name}); });
+
+                //data.push({id: this, text: "test"});
             });
-            callback(data);
+            callback(result);
         },
         escapeMarkup: function (m) { return m; }
         });

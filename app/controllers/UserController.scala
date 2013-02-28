@@ -80,9 +80,14 @@ object UserController extends BaseController {
       if (request.queryString.contains("q")) {
         val q = request.queryString("q").head
         Logger.debug(s"Looking for user with ID '$q'")
-        val list = Account.idNameOnly(s"%$q%")
-        val jsonObjects = list.map(idName => Json.obj("id" -> idName._1, "text" -> idName._2))
-        Ok(Json.obj("values" -> jsonObjects))
+        val userOpt = Account.findById(q.toLong)
+        userOpt match {
+          case Some(user) => {
+            val jsonObjects = Json.obj("name" -> user.name)
+            Ok(jsonObjects)
+          }
+          case None       => NotFound
+        }
       } else {
         BadRequest("missing required parameter")
       }

@@ -16,6 +16,7 @@ GET     /user/signup                controllers.UserController.signup
 POST    /user/signup                controllers.UserController.signupSave
 POST    /user/save                  controllers.UserController.save
 GET     /user/json                  controllers.UserController.jsonUsers
+GET     /user/jsonName              controllers.UserController.jsonUserName
 
 # Message
 GET     /message/main                     controllers.Message.main

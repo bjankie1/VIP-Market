@@ -31,7 +31,7 @@ object EventApprover {
   def simple: RowParser[EventApprover] = {
     long("event_approver.event_id") ~
     long("event_approver.user_id") map {
-      case eventId ~ userId => EventApprover(eventId, userId)
+      case eventId ~ userId => EventApprover(userId, eventId)
     }
   }
 
@@ -81,8 +81,8 @@ object EventApprover {
    * @param eventId Event to replace approvers for
    * @param approvers List of ids of approving users
    */
-  def replace(eventId: Long, approvers: List[Long]) {
-    Logger.debug(s"Saving ${approvers.size} approvers for event $eventId")
+  def replace(eventId: Long, approvers: Seq[Long]) {
+    Logger.debug(s"Saving $approvers approvers for event $eventId")
     val deleteSql =
       """
         |delete from event_approver
