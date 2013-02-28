@@ -119,16 +119,16 @@ $(document).ready(function() {
         },
         initSelection: function(element, callback) {
             var result = [];
+            console.debug(result);
             $(element.val().split(",")).each(function () {
-
+                var id = this;
                 $.ajax("@routes.UserController.jsonUserName()", {
-                    data: {q: this},
+                    data: {q: id},
                     dataType: "json",
                     async: false
-                }).done(function(data) { result.push({id: this, text: data.name}); });
-
-                //data.push({id: this, text: "test"});
+                }).done(function(data) { result.push({id: id, text: data.name}); });
             });
+            console.debug(result);
             callback(result);
         },
         escapeMarkup: function (m) { return m; }
