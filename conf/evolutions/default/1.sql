@@ -76,10 +76,19 @@ create table event_type (
 
 ALTER TABLE event_type ADD CONSTRAINT event_type_name_unique UNIQUE(name);
 
+create table event_approver (
+  event_id                  int(11) not null,
+  user_id                   int(11) not null
+);
+
+ALTER TABLE event_approver ADD CONSTRAINT event_approver_unique UNIQUE(event_id, user_id);
+
+
 # --- !Downs
 
 drop table if exists user;
 drop table if exists event;
+drop table if exists event_type;
 drop table if exists venue;
 drop table if exists vip_lounge;
 drop table if exists vip_lounge_event;

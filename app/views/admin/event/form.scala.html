@@ -4,6 +4,13 @@
     eventTypes: List[(String,String)]
 )(implicit flash: Flash)
 
+
+@approvers = {
+    @eventForm("approvers").indexes.map { index => @eventForm(s"approvers[$index]").value }.reduceLeft { (acc, n) =>
+        @acc, @n
+    }
+}
+
 @import helper._
 @import helper.twitterBootstrap._
 
@@ -16,9 +23,8 @@
 
 @admin.main(Messages("event"), scripts)(Messages("event.create")) {
 	@admin.tags.validationmessage(eventForm.errors)
-  
-	@helper.form(action = routes.EventController.update(id), 'enctype -> "multipart/form-data") {
-   
+    @helper.form(action = routes.EventController.update(id), 'enctype -> "multipart/form-data") {
+
         <fieldset>
             <legend>@Messages("general.information")</legend>
             <div class="container-fluid">
@@ -76,12 +82,9 @@
 
                 <div class="row-fluid">
                     <div class="span8">
-                        @inputText(
-                            eventForm("approvers"),
-                            '_label           -> Messages("event.name"),
-                            '_showConstraints -> false,
-                            'type             -> "hidden"
-                        )
+                        <label for="@{eventForm("approvers").id}">@Messages("event.select.approvers")</label>
+                        <input id="@{eventForm("approvers").id}" type="hidden" name="@{eventForm("approvers").name}[]"
+                            value="@{approvers.toString().trim()}">
                     </div>
                 </div>
                 <div class="row-fluid">
@@ -123,7 +126,7 @@ $(document).ready(function() {
         initSelection: function(element, callback) {
             var data = [];
             $(element.val().split(",")).each(function () {
-                data.push({id: this, text: this});
+                data.push({id: this, text: "test"});
             });
             callback(data);
         },

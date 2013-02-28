@@ -76,6 +76,41 @@ object EventController extends BaseController {
       ))
   }
 
+  def create = Action {
+    implicit request =>
+      Ok(views.html.admin.event.form(
+        -1,
+        eventForm.fill(
+          (
+            Event.createNew,
+            List(1l,3l)
+            )
+        ),
+        venues,
+        eventTypes
+      ))
+  }
+
+  /**
+   * Edit event action.
+   * @param id Identifier of event
+   * @return Returns related action
+   */
+  def edit(id: Long) = Action {
+    implicit request =>
+      Logger.debug(s"Editing event ${id}")
+      val approvers = EventApprover.approversForEvent(id)
+      Event.findById(id) match {
+        case Some(existing) => Ok(views.html.admin.event.form(
+          existing.id.get,
+          eventForm.fill((existing, approvers.map(_.userId))),
+          venues,
+          eventTypes
+        ))
+        case None => Redirect(routes.EventController.list(1)) flashing "message" -> "Event could not be found"
+      }
+  }
+
   /**
    * Update given event loaded from form data
    */
@@ -96,9 +131,9 @@ object EventController extends BaseController {
               id
             }
           }
+          EventApprover.replace(eventId, event._2)
           request.upload(fileOwnerId(eventId))
           Redirect(routes.EventController.index) flashing "message" -> Messages("save.success", event._1.name)
-          //TODO store approvers from event._2
         }
       )
   }
@@ -151,41 +186,6 @@ object EventController extends BaseController {
               Redirect(routes.EventController.list(1).url)
             })
         }
-      }
-  }
-
-  def create = Action {
-    implicit request =>
-      Ok(views.html.admin.event.form(
-        -1,
-        eventForm.fill(
-          (
-            Event.createNew,
-            List(1l,3l)
-          )
-        ),
-        venues,
-        eventTypes
-      ))
-  }
-
-  /**
-   * Edit event action.
-   * @param id Identifier of event
-   * @return Returns related action
-   */
-  def edit(id: Long) = Action {
-    implicit request =>
-      Logger.debug(s"Editing event ${id}")
-      //TODO: load list of approvers
-      Event.findById(id) match {
-        case Some(existing) => Ok(views.html.admin.event.form(
-          existing.id.get,
-          eventForm.fill((existing, Nil)),
-          venues,
-          eventTypes
-        ))
-        case None => Redirect(routes.EventController.list(1)) flashing "message" -> "Event could not be found"
       }
   }
 

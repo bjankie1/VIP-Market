@@ -18,7 +18,8 @@
             <td>@event.startDate.toString("yyyy-MM-dd hh:mm")</td>
 			<td>
 				<div class="btn-group">
-					<a class="btn btn-mini" href="@routes.EventController.vipLounges(event.id.get)">@Messages("event.lounges")</a>
+                    <a class="btn btn-mini" href="@routes.EventController.edit(event.id.get)">@Messages("edit")</a>
+                    <a class="btn btn-mini" href="@routes.EventController.vipLounges(event.id.get)">@Messages("event.lounges")</a>
                     <a class="btn btn-mini" data-toggle="modal" href="@routes.EventController.photos(event.id.get)" data-target="#filesModal">@Messages("photos")</a>
 				</div>
 			</td>
