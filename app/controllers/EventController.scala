@@ -29,7 +29,7 @@ object EventController extends BaseController {
       "venueId" -> longNumber,
       "active" -> boolean,
       "date" -> ignored(DateTime.now),
-      "approvers" -> text.verifying("event.select.approvers.invalid", a => a.split(",").forall(_.matches("\\d+")))
+      "approvers" -> text.verifying(Messages("event.select.approvers.invalid"), a => a.split(",").forall(_.matches("\\d+")))
     )((id, name, description, startDate, eventTypeId, venueId, active, date, approvers) =>
         (Event(id, name, description, startDate, eventTypeId, venueId, active, date), approvers))(e => {
           if (e eq null) None

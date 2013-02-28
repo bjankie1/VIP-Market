@@ -40,6 +40,7 @@ event.create=Nowa impreza
 event.list=Lista imprez
 event.lounges=Loże VIP
 event.select.approvers=Wybierz zatwierdzających
+event.select.approvers.invalid=Musisz wybrać jakieś osoby do obsługi
 
 #Rodzaje imprez
 event.type.create=Nowy rodzaj imprezy
