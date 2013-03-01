@@ -153,6 +153,7 @@ object BusinessSectorRow {
           'seats -> row.seats
         ).executeInsert()
       }
-
+    }
   }
+
 }
