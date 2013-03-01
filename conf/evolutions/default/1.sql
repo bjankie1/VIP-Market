@@ -84,12 +84,22 @@ create table event_approver (
 ALTER TABLE event_approver ADD CONSTRAINT event_approver_unique UNIQUE(event_id, user_id);
 
 
+create table business_sector (
+  id                        varchar(20),
+  venue_id                  int(11) not null,
+  display_scheme            varchar(20) not null,
+  primary key(id, venue_id)
+);
+
+
 # --- !Downs
 
 drop table if exists user;
 drop table if exists event;
 drop table if exists event_type;
+drop table if exists event_approver;
 drop table if exists venue;
 drop table if exists vip_lounge;
 drop table if exists vip_lounge_event;
 drop table if exists file_info;
+drop table if exists business_sector;

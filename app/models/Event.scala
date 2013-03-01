@@ -99,11 +99,11 @@ object Event extends AbstractModel {
             """
     Logger("sql").debug(sql)
     DB.withConnection {
-      (implicit connection =>
+      implicit connection =>
         SQL(sql).on(
           'limit 	-> limit,
           'offset 	-> Math.max(0, page - 1) * limit
-        ).as(Event.simple *))
+        ).as(Event.simple *)
     }
   }
   

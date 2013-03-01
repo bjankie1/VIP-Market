@@ -60,15 +60,15 @@ object Venue extends AbstractModel {
           'id -> id).as(Venue.simple.singleOpt))
     }
   }
-  
+
   def getAll: List[Venue] = {
-	Logger.info("Loading all venues")
-	val sql = "select * from venue order by name"
-	Logger("sql").debug(sql) 
+    Logger.info("Loading all venues")
+    val sql = "select * from venue order by name"
+    Logger("sql").debug(sql)
     DB.withConnection {
       (implicit connection =>
         SQL(sql).as(Venue.simple *)
-      )
+        )
     }
   }
   
