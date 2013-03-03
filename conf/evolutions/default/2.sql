@@ -27,7 +27,11 @@ values ( 1, 'Loża szyderców', 666, 'Wielka zabawa', 1, 1, 'VL_1', true, '2013-
 
 insert into user(id, email,                  password,                             seed,         name,    active, date_created, permission)
 values           (1,'admin@sportsmarket.pl', '87e82ac94bbab66454f9b09f991c6282',   'mec0R7KBlu', 'admin', true,   '2013-02-12', 'Administrator'),
-                 (2,'user@sportsmarket.pl',  '87e82ac94bbab66454f9b09f991c6282',   'mec0R7KBlu', 'tester',true,   '2013-02-12', 'NormalUser')
+                 (2,'user@sportsmarket.pl',  '87e82ac94bbab66454f9b09f991c6282',   'mec0R7KBlu', 'tester',true,   '2013-02-12', 'NormalUser');
+
+insert into business_sector(id, venue_id, row_scheme)
+values ('A', 1, 'Roman'),
+       ('B', 1, 'Roman');
 
 # --- !Downs
 

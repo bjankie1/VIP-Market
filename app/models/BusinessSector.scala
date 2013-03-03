@@ -27,9 +27,9 @@ object BusinessSector {
 
   // ~parser
   def simple: RowParser[BusinessSector] = {
-    str("sector.id") ~
-    int("sector.venue_id") ~
-    str("sector.display_scheme") map {
+    str("business_sector.id") ~
+    int("business_sector.venue_id") ~
+    str("business_sector.row_scheme") map {
       case id ~ venueId ~ displayScheme => BusinessSector(id, venueId, DisplayScheme.withName(displayScheme))
     }
   }
@@ -38,7 +38,12 @@ object BusinessSector {
 
   def findForVenue(venueId: Long) = {
     Logger.debug(s"Loading sectors for venue $venueId")
-    val sql = "select * from business_sector where venue_id = {venueId}"
+    val sql =
+      """
+        | select *
+        | from business_sector
+        | where venue_id = {venueId}
+      """.stripMargin
     Logger("sql").debug(sql)
 
     DB.withConnection {
@@ -55,19 +60,16 @@ object BusinessSector {
     Logger.debug(s"Storing sector ${sector.id} for ${sector.venueId}")
     val sql =
       """
-        |insert into business_sector(id, venue_id, display_scheme)
-        |values({id}, {venueId}, {displayScheme}
+        |insert into business_sector(id, venue_id, row_scheme)
+        |values({id}, {venueId}, {rowScheme})
       """.stripMargin
     Logger("sql").debug(sql)
     DB.withConnection { implicit connection =>
       SQL(sql).on(
         'id -> sector.id,
         'venueId -> sector.venueId,
-        'displayScheme -> sector.rowScheme
-      ).executeInsert() match {
-        case Some(id) => id
-        case None     => throw new Exception("Failed storing new BusinessSector")
-      }
+        'rowScheme -> sector.rowScheme.toString
+      ).executeInsert()
     }
   }
 
@@ -75,15 +77,15 @@ object BusinessSector {
     Logger.debug(s"updating sector ${sector.id} for ${sector.venueId}")
     val sql =
       """
-        |update business_sector set display_scheme = {displayScheme}
-        |where id = {id} and venue_id = {venue
+        |update business_sector set row_scheme = {rowScheme}
+        |where id = {id} and venue_id = {venueId}
       """.stripMargin
     Logger("sql").debug(sql)
     DB.withConnection { implicit connection =>
       SQL(sql).on(
         'id -> sector.id,
         'venueId -> sector.venueId,
-        'displayScheme -> sector.rowScheme
+        'rowScheme -> sector.rowScheme.toString
       ).executeUpdate()
     }
   }
@@ -94,10 +96,10 @@ object BusinessSectorRow {
 
   // ~parser
   def simple = {
-    str("row.sector_id") ~
-    int("row.venue_id") ~
-    int("row.sector_id") ~
-    int("row.venue_id") map {
+    getAliased[String]("ROW_SECTOR_ID") ~
+    getAliased[Int]("ROW_VENUE_ID") ~
+    getAliased[Int]("ROW_ROW") ~
+    getAliased[Int]("ROW_SEATS") map {
       case sectorId ~ venueId ~ row ~ seats => BusinessSectorRow(sectorId, venueId, row, seats)
     }
   }
@@ -108,7 +110,9 @@ object BusinessSectorRow {
     Logger.debug(s"Loading rows for $sector in $venueId")
     val sql =
       """
-        |select * from business_sector_row where venue_id = {venueId} and sector_id = {sectorId}
+        |select sector_id as row_sector_id, venue_id as row_venue_id, row as row_row, seats as row_seats
+        |from business_sector_row as row
+        |where venue_id = {venueId} and sector_id = {sectorId}
       """.stripMargin
     DB.withConnection { implicit connection =>
       SQL(sql).on(
@@ -119,6 +123,25 @@ object BusinessSectorRow {
   }
 
   // ~updates
+
+
+  def update(row: BusinessSectorRow) = {
+    Logger.debug(s"Updating business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
+    val sql =
+      """
+        |update business_sector_row set seats = {seats}
+        |where sector_id = {sectorId} and venue_id = {venueId} and row =  {row}
+      """.stripMargin
+    Logger("sql").debug(sql)
+    DB.withConnection { implicit connection =>
+      SQL(sql).on(
+        'sectorId -> row.sectorId,
+        'venueId -> row.venueId,
+        'row -> row.row,
+        'seats -> row.seats
+      ).executeInsert()
+    }
+  }
 
   def insert(row: BusinessSectorRow) = {
     Logger.debug(s"Inserting business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
@@ -137,24 +160,6 @@ object BusinessSectorRow {
       ).executeInsert()
     }
 
-
-    def update(row: BusinessSectorRow) = {
-      Logger.debug(s"Updating business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
-      val sql =
-        """
-          |update business_sector_row set seats = {seats}
-          |where sector_id = {sectorId} and venue_id = {venueId} and row =  {row}
-        """.stripMargin
-      Logger("sql").debug(sql)
-      DB.withConnection { implicit connection =>
-        SQL(sql).on(
-          'sectorId -> row.sectorId,
-          'venueId -> row.venueId,
-          'row -> row.row,
-          'seats -> row.seats
-        ).executeInsert()
-      }
-    }
   }
 
 }

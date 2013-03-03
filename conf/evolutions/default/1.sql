@@ -87,7 +87,7 @@ ALTER TABLE event_approver ADD CONSTRAINT event_approver_unique UNIQUE(event_id,
 create table business_sector (
   id                        varchar(20),
   venue_id                  int(11) not null,
-  display_scheme            varchar(20) not null,
+  row_scheme                varchar(20) not null,
   primary key(id, venue_id)
 );
 

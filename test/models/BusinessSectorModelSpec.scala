@@ -13,9 +13,58 @@ import play.api.test.Helpers._
 class BusinessSectorModelSpec extends Specification {
 
   "BusinessSectorModel" should {
-    running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
 
+    "findForVenue" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val sectors = BusinessSector.findForVenue(1l)
+        sectors.size must beGreaterThan(0)
+      }
     }
+
+    "saveNewSector" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        BusinessSector.insert(BusinessSector("C", 1, DisplayScheme.Roman))
+        val sectors = BusinessSector.findForVenue(1)
+        sectors.exists(_.id.equals("C")) must beTrue
+      }
+    }
+
+    "updateSector" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        BusinessSector.update(BusinessSector("A", 1, DisplayScheme.Letter))
+        val sectors = BusinessSector.findForVenue(1)
+        sectors.filter(_.id.equals("A")).head.rowScheme must beEqualTo(DisplayScheme.Letter)
+      }
+    }
+
   }
 
+  "BusinessSectorRowModel" should {
+
+    "findForVenueAndSector" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        val rows = BusinessSectorRow.findForVenueAndSector(1, "A")
+        rows.size must beEqualTo(2)
+      }
+    }
+
+
+    "saveNewSectorRow" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        BusinessSectorRow.insert(BusinessSectorRow("C", 1, 1, 1))
+        val sectorRows = BusinessSectorRow.findForVenueAndSector(1, "C")
+        sectorRows.exists(_.sectorId.equals("C")) must beTrue
+      }
+    }
+
+    "updateSectorRow" in {
+      running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+        BusinessSectorRow.update(BusinessSectorRow("A", 1, 1, 666))
+        val rows = BusinessSectorRow.findForVenueAndSector(1, "A")
+        rows.filter(_.row == 1).forall(_.seats == 666) must beTrue
+      }
+    }
+
+
+  }
 }
