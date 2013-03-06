@@ -17,17 +17,15 @@ import utils.Collections._
  * Date: 3/3/13
  * Time: 9:04 PM
  */
-class BusinessSeatController extends BaseController {
+object BusinessSeatController extends BaseController {
 
   /**
    * Representation of a single sector
-   * @param id Identifier
-   * @param venueId Id of Venue
    * @param rowScheme Row naming scheme
    * @param seatScheme Seats naming scheme
    * @param rowsSeats List of ranges describing seats distribution
    */
-  case class Sector(id: String, venueId: Int, rowScheme: String, seatScheme: String, rowsSeats: List[RowsRangeSeats])
+  case class Sector(rowScheme: String, seatScheme: String, rowsSeats: List[RowsRangeSeats])
 
   /**
    * Representation of seats distribution in given rows. It uses range expression that uses hyphen to represent continuous range
@@ -70,30 +68,10 @@ class BusinessSeatController extends BaseController {
         }.toList
     }
 
-    /**
-     * Parse range expression into list of integers
-     * @param expressions Expressions sequence. Each expression is either a number or range N-M where M > N
-     */
-    def parseRange( expressions: Seq[String]): Seq[Int] = {
-      expressions match {
-        case Nil => Nil
-        case _   => {
-          val expr = expressions.head
-          if (expr.matches("""\d+-\d+""")) {
-            val pair = expr.split("-")
-            val range = (pair.head.toInt to pair.last.toInt)
-            range ++ parseRange(expressions.tail)
-          } else {
-            expr.toInt +: parseRange(expressions.tail)
-          }
-        }
-      }
-    }
+  }
 
   val form: Form[Sector] = Form (
     mapping(
-      "id" -> nonEmptyText(1, 20),
-      "venueId" -> number,
       "rowScheme" -> text().verifying(value => DisplayScheme.values.exists(_.toString.equalsIgnoreCase(value))),
       "seatsScheme" -> text().verifying(value => DisplayScheme.values.exists(_.toString.equalsIgnoreCase(value))),
       "rowsSeats" -> Forms.list(mapping(
@@ -108,15 +86,21 @@ class BusinessSeatController extends BaseController {
       Logger.info(s"Editing sector $sectorId for venue $venueId")
       val businessSector = BusinessSector.findSector(venueId, sectorId)
       val rows = BusinessSectorRow.findForVenueAndSector(venueId, sectorId)
-      val viewSector = businessSector match {
-        case None => Sector(sectorId, venueId, DisplayScheme.Numeric.toString, DisplayScheme.Numeric.toString, Nil)
+      val viewSector: Sector = businessSector match {
+        case None => Sector(DisplayScheme.Numeric.toString, DisplayScheme.Numeric.toString, Nil)
         case Some(bs) => {
           val sector = Sector(
-            sectorId, venueId, bs.rowScheme.toString, DisplayScheme.Numeric.toString, RowsRangeSeats.fromRows(rows)
+            bs.rowScheme.toString, DisplayScheme.Numeric.toString, RowsRangeSeats.fromRows(rows)
           )
+          sector
         }
       }
-      Ok(views.html.admin.sectors.form(viewSector))
+      Ok(views.html.admin.seats.form(venueId, sectorId, form.fill(viewSector)))
+  }
+
+  def update(venueId: Int, sectorId: String) = authorizedAction(authorizeAdmin) {
+    user => implicit request =>
+      Ok("Saved")
   }
 
 }

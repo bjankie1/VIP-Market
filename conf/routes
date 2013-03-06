@@ -60,6 +60,9 @@ POST    /admin/viplounge/:id              controllers.VipLoungeController.update
 GET     /admin/viplounge/activate/:id     controllers.VipLoungeController.activate(id: Long)
 GET     /admin/viplounge/disactivate/:id  controllers.VipLoungeController.disactivate(id: Long)
 
+GET     /admin/seats/edit/:venueId/:sectorId    controllers.BusinessSeatController.edit(venueId: Int, sectorId: String)
+POST    /admin/seats/update/:venueId/:sectorId  controllers.BusinessSeatController.update(venueId: Int, sectorId: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /files                      controllers.FileController.list

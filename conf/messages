@@ -71,7 +71,10 @@ vip.lounge.add=Dodaj lożę
 vip.lounge.base.price=Cena podstawowa
 
 #Business class
+business.class.seats=Business club
 business.class.seats.range.invalid=Nieprawidłowy opis
+business.class.seats.rows.scheme=Schemat numeracji rzędów
+business.class.seats.seats.scheme=Schemat numeracji krzeseł
 
 #Users
 user.name=Imię i nazwisko

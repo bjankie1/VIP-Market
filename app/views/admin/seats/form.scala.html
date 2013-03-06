@@ -1,1 +1,53 @@
-@(form: Form[controllers.BusinessSeatController.Sector])
+@(venueId: Int, sector: String, sectorForm: Form[controllers.BusinessSeatController.Sector])(implicit flash: Flash)
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@admin.main("business.class.seats")("business.class.seats") {
+    @admin.tags.validationmessage(sectorForm.errors)
+
+    @helper.form(action = routes.BusinessSeatController.update(venueId, sector)) {
+        <fieldset>
+            <legend>@Messages("business.class.seats")</legend>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span4">
+
+                       @select(
+                            sectorForm("rowScheme"),
+                            options = DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
+                            '_label -> Messages("business.class.seats.rows.scheme"),
+                            '_showConstraints -> false
+                       )
+                    </div>
+                    <div class="span4">
+
+                       @select(
+                            sectorForm("seatsScheme"),
+                            options = DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
+                            '_label -> Messages("business.class.seats.seats.scheme"),
+                            '_showConstraints -> false
+                       )
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        @repeat(sectorForm("rowsSeats"), min = 1) { rangeForm =>
+                            @inputText(rangeForm("rowsRanges"))
+                            @inputText(rangeForm("seats"))
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+
+<div class="actions">
+    <input type="submit" class="btn btn-primary" value="Insert">
+    <a href="@routes.EventTypeController.update(1)" class="btn">Cancel</a>
+</div>
+
+    }
+
+    }
