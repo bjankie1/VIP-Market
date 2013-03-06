@@ -71,7 +71,7 @@
     @flash.get("message") match {
         case Some(message) => {
           @admin.tags.notice("success") {
-              <p>@message</p>
+              <p>@Messages(message)</p>
           }
         }
         case None => {}

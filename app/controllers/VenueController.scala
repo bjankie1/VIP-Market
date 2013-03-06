@@ -19,17 +19,7 @@ import play.api.libs.iteratee.Enumerator
 object VenueController extends BaseController {
 
 
-  case class Test(name: String, email: List[String])
-
-  val testFrom: Form[Test] = Form(
-    mapping(
-      "name" -> nonEmptyText,
-      "emails" -> Forms.list(nonEmptyText)
-    )(Test.apply)(Test.unapply)
-  )
-
-
-  val form: Form[Venue] = Form(
+  val venueForm: Form[Venue] = Form(
     mapping(
       "id" -> ignored(NotAssigned: Pk[Long]),
       "name" -> nonEmptyText(1, 255),
@@ -62,22 +52,22 @@ object VenueController extends BaseController {
 
   def edit(id: Long) = authorizedAction(authorizeAdmin) { user => implicit request =>
       Venue.findById(id) match {
-        case Some(existing) => Ok(views.html.admin.venue.form(existing.id.get, form.fill(existing)))
-        case None => Redirect(routes.VenueController.list) flashing "message" -> "Venue could not be found"
+        case Some(existing) => Ok(views.html.admin.venue.form(existing.id.get, venueForm.fill(existing)))
+        case None => Redirect(routes.VenueController.list) flashing "message" -> "venue.not.found"
       }
   }
 
   def create = authorizedAction(authorizeAdmin) { user => implicit request =>
       Ok(views.html.admin.venue.form(
         -1l,
-        form.fill(Venue.create)
+        venueForm.fill(Venue.create)
       ))
   }
 
-  def update(id: Long) = Action {
+  def update(id: Long) = authorizedAction(authorizeAdmin) { user =>
     implicit request =>
       Logger("controller").debug(s"Updating venue ${id}")
-      form.bindFromRequest.fold(
+      venueForm.bindFromRequest.fold(
         errors => BadRequest(views.html.admin.venue.form(id, errors)),
         venue => {
           id match {
@@ -85,7 +75,7 @@ object VenueController extends BaseController {
             case _  => Venue.update(id, venue)
           }
 
-          Redirect(routes.VenueController.list) flashing "message" -> Messages("save.success", venue.name)
+          Redirect(routes.VenueController.list()) flashing "message" -> Messages("save.success", venue.name)
         }
       )
   }
@@ -93,9 +83,8 @@ object VenueController extends BaseController {
   def preview(id: Long) = Action {
     Venue.findById(id) match {
       case Some(existing) => Ok(views.html.admin.venue.preview(existing))
-      case None => Redirect(routes.VenueController.list) flashing "message" -> "Venue could not be found"
+      case None => Redirect(routes.VenueController.list()) flashing "message" -> "Venue could not be found"
     }
-
   }
 
   def wiki = Action {

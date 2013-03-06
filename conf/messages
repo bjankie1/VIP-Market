@@ -58,6 +58,7 @@ venue.street=Ulica
 venue.city=Miasto
 venue.country=Kraj
 venue.active=Aktywny
+venue.not.found=Nie ma takiego obiektu
 
 #VIP Lounge
 vip.lounge=Loża VIP
@@ -69,13 +70,16 @@ vip.lounge.list=Lista lóż
 vip.lounge.add=Dodaj lożę
 vip.lounge.base.price=Cena podstawowa
 
+#Business class
+business.class.seats.range.invalid=Nieprawidłowy opis
+
 #Users
 user.name=Imię i nazwisko
 user.password=Hasło
 user.password.repeat=Powtórz hasło
 user.rules.agreement=Zapoznałem się i zgadzam się z regulaminem
 user.notifications.agreement=Chcę otrzymywać powiadomienia związane z procesem rezerwacji na wskazany adres email
-user.password.validation.notmatch=Oba hasła musza być jednakowe
+user.password.validation.no.match=Oba hasła musza być jednakowe
 user.validation.rules.must.agree=Musisz się zgodzić na warunki regulaminu
 user.validation.notifications.must.agree=Musisz się zgodzić na powiadomienia
 user.list=Lista użytkowników

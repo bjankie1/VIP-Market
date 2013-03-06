@@ -39,7 +39,7 @@ object UserController extends BaseController {
         case data.passwordRepeat => Valid
         case _ => {
           Logger.warn("Invalid second password")
-          Invalid(Messages("user.password.validation.notmatch"))
+          Invalid(Messages("user.password.validation.no.match"))
         }
       }
   }

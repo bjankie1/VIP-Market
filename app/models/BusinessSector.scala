@@ -54,6 +54,27 @@ object BusinessSector {
     }
   }
 
+
+  def findSector(venueId: Long, id: String) = {
+    Logger.debug(s"Loading sector $id for venue $venueId")
+    val sql =
+      """
+        | select *
+        | from business_sector
+        | where venue_id = {venueId} and id={id}
+      """.stripMargin
+    Logger("sql").debug(sql)
+
+    DB.withConnection {
+      implicit connection =>
+        SQL(sql).on(
+          'venueId -> venueId,
+          'id      -> id
+        ).as(simple singleOpt)
+    }
+  }
+
+
   // ~updates
 
   def insert(sector: BusinessSector) = {
@@ -123,7 +144,6 @@ object BusinessSectorRow {
   }
 
   // ~updates
-
 
   def update(row: BusinessSectorRow) = {
     Logger.debug(s"Updating business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
