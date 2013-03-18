@@ -10,7 +10,7 @@ POST    /login                      controllers.Application.authenticate
 GET     /logout                     controllers.Application.logout
 
 # Users
-GET     /user                       controllers.UserController.list
+GET     /admin/user/list            controllers.UserController.list
 GET     /user/edit/:email           controllers.UserController.edit(email)
 GET     /user/signup                controllers.UserController.signup
 POST    /user/signup                controllers.UserController.signupSave
@@ -65,6 +65,8 @@ POST    /admin/seats/update/:venueId/:sectorId  controllers.BusinessSeatControll
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Files
 GET     /files                      controllers.FileController.list
 GET     /file/:id                   controllers.FileController.load(id)
 POST    /upload                     controllers.FileController.upload

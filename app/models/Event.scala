@@ -79,7 +79,7 @@ object Event extends AbstractModel {
     * Retrieve a User from email.
     */
   def findById(id: Long): Option[Event] = {
-    Logger.info("finding event")
+    Logger.info(s"finding event $id")
     val sql = "select * from event where id = {id}"
     Logger("sql").debug(sql)
     DB.withConnection {

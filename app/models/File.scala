@@ -13,8 +13,8 @@ import anorm.SqlParser._
 import java.io.{ByteArrayOutputStream, InputStream, ByteArrayInputStream, FileInputStream}
 import scala.util.Random
 import java.awt.image.BufferedImage
-import com.mortennobel.imagescaling.ResampleOp
 import javax.imageio.ImageIO
+import com.mortennobel.imagescaling.ResampleOp
 
 /**
  * Abstract file representation

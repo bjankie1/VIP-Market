@@ -25,6 +25,8 @@ object Account extends AbstractModel {
 
   val SEED_SIZE = 10
 
+  val TABLE_NAME = "user_account"
+
   def apply(email: String, name: String): Account =
     apply(NotAssigned, email, name, NormalUser)
 
@@ -37,7 +39,7 @@ object Account extends AbstractModel {
       Permission.fromString(value.toString) match {
         case Some(perm) => Right(perm)
         case None => Left(TypeDoesNotMatch(
-          s"Cannot convert ${value} : ${value.getClass} to Permission for column ${meta.column}"))
+          s"Cannot convert $value : ${value.getClass} to Permission for column ${meta.column}"))
       }
     }
   }
@@ -48,24 +50,24 @@ object Account extends AbstractModel {
     * Parse a User from a ResultSet
     */
   val simple: RowParser[Account] = {
-      get[Pk[Long]]("user.id") ~
-      str("user.email") ~
-      str("user.name") ~
-      get[Permission]("user.permission") map {
+      get[Pk[Long]](s"$TABLE_NAME.id") ~
+      str(s"$TABLE_NAME.email") ~
+      str(s"$TABLE_NAME.name") ~
+      get[Permission](s"$TABLE_NAME.permission") map {
         case id ~ email ~ name  ~ permission => Account(id, email, name, permission)
       }
   }
 
   val hashSeedOnly: RowParser[(String,String)] = {
-      str("user.password") ~
-      str("user.seed") map {
+      str(s"$TABLE_NAME.password") ~
+      str(s"$TABLE_NAME.seed") map {
         case password ~ seed => (password, seed)
       }
   }
   
   val idNameParser: RowParser[(Long,String)] = {
-    get[Long]("user.id") ~
-    str("user.name") map {
+    get[Long](s"$TABLE_NAME.id") ~
+    str(s"$TABLE_NAME.name") map {
       case id ~ name => (id, name)
     }
   }
@@ -80,7 +82,7 @@ object Account extends AbstractModel {
     * Retrieve a User from email.
     */
   def findByEmail(email: String): Option[Account] = {
-    val sql = "select * from user where email = {email}"
+    val sql = s"select * from $TABLE_NAME where email = {email}"
     Logger("sql").debug(sql)
     DB.withConnection {
       (implicit connection =>
@@ -90,7 +92,7 @@ object Account extends AbstractModel {
   }
 
   def findById(id: Long) = {
-    val sql = "select * from user where id = {id}"
+    val sql = s"select * from $TABLE_NAME where id = {id}"
     DB.withConnection {
       (implicit connection =>
         SQL(sql).on(
@@ -105,13 +107,14 @@ object Account extends AbstractModel {
   def findAll: Seq[Account] = {
     DB.withConnection {
       (implicit connection =>
-        SQL("select * from user").as(Account.simple *))
+        SQL(s"select * from $TABLE_NAME").as(Account.simple *))
     }
   }
   
   def idNameOnly(namePattern: String) = {
-    val sql = """
-      select id,name from user where name like {name} order by name
+    val sql = s"""
+      select id,name from $TABLE_NAME
+      where name like {name} order by name
       """
     Logger("sql").debug(sql)
     DB.withConnection { (implicit connection =>
@@ -125,8 +128,8 @@ object Account extends AbstractModel {
     * Authenticate a User.
     */
   def authenticate(email: String, password: String): Option[Account] = {
-    Logger.debug(s"authenticating user ${email}")
-    val sql = "select * from user where email = {email}"
+    Logger.debug(s"authenticating user $email")
+    val sql = s"select * from $TABLE_NAME where email = {email}"
     Logger("sql").debug(sql)
     val userOpt = DB.withConnection {
       (implicit connection =>
@@ -147,9 +150,12 @@ object Account extends AbstractModel {
   /**
    * Number of users in database
    */
-  def userCount: Long =
+  def userCount: Long = {
+    val sql = s"select count(*) from $TABLE_NAME"
+    Logger("sql").debug(sql)
     DB.withConnection(implicit connection =>
-      SQL("select count(*) from user").as(scalar[Long].single))
+      SQL(sql).as(scalar[Long].single))
+  }
 
   /**
     * Create a User.
@@ -158,8 +164,8 @@ object Account extends AbstractModel {
     */
   def create(email: String, name: String, password: String, permission: Permission) = {
     val sql = 
-        """
-          insert into user(email,name,password,seed,active,date_created,permission) 
+        s"""
+          insert into $TABLE_NAME(email,name,password,seed,active,date_created,permission)
           values ({email},{name},{password},{seed},{active},{dateCreated},{permission})
         """
     Logger("sql").debug(sql)
@@ -178,7 +184,7 @@ object Account extends AbstractModel {
       	case _ => throw new RuntimeException("Could not insert into database, no PK returned")
       }
     }
-    Logger.debug(s"User ${name} created with id ${id}")
+    Logger.debug(s"User $name created with id ${id}")
     id
   }
   

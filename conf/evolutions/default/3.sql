@@ -5,9 +5,9 @@
 
 create table business_sector_row (
   sector_id                 varchar(20),
-  venue_id                  int(11) not null,
-  row                       int(3)  not null,
-  seats                     int(3)  not null,
+  venue_id                  integer  not null,
+  row                       integer  not null,
+  seats                     integer  not null,
   primary key(sector_id, venue_id, row)
 );
 

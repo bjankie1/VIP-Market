@@ -14,6 +14,14 @@ import play.api.i18n.Messages
 
 object UserController extends BaseController {
 
+  case class SignupData(
+                         email: String,
+                         name: String,
+                         password: String,
+                         passwordRepeat: String,
+                         acceptRules: Boolean,
+                         acceptNotifications: Boolean)
+
   val userProfileForm: Form[Account] = Form(
     mapping(
       "email" -> nonEmptyText,
@@ -23,14 +31,6 @@ object UserController extends BaseController {
       else Some((a.email, a.name))
     })
   )
-
-  case class SignupData(
-                         email: String,
-                         name: String,
-                         password: String,
-                         passwordRepeat: String,
-                         acceptRules: Boolean,
-                         acceptNotifications: Boolean)
 
   private def verifyPasswords = Constraint[SignupData] {
     data: SignupData =>
@@ -97,9 +97,9 @@ object UserController extends BaseController {
    * List of all users
    */
   def list = authorizedAction(authorizeAdmin) {
-    user => request =>
+    user => implicit request =>
       val users = Account.findAll
-      Ok(views.html.user.index(users))
+      Ok(views.html.admin.user.list(users))
   }
 
   def edit(email: String) = authorizedAction(authorizeAdmin) {

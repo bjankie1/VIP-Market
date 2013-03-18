@@ -115,6 +115,7 @@ object EventController extends BaseController {
 
   /**
    * Update given event loaded from form data
+   * @param id Identifier of Event
    */
   def update(id: Long) = Action(parse.multipartFormData) {
     implicit request =>

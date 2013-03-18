@@ -4,6 +4,7 @@
 @import helper.twitterBootstrap._
 
 @admin.main("business.class.seats")("business.class.seats") {
+
     @admin.tags.validationmessage(sectorForm.errors)
 
     @helper.form(action = routes.BusinessSeatController.update(venueId, sector)) {
@@ -15,7 +16,7 @@
 
                        @select(
                             sectorForm("rowScheme"),
-                            options = DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
+                            options = ("" -> "") +: DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
                             '_label -> Messages("business.class.seats.rows.scheme"),
                             '_showConstraints -> false
                        )
@@ -24,18 +25,26 @@
 
                        @select(
                             sectorForm("seatsScheme"),
-                            options = DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
+                            options = ("" -> "") +: DisplayScheme.values.map(v => (v.toString, v.toString)).toSeq,
                             '_label -> Messages("business.class.seats.seats.scheme"),
                             '_showConstraints -> false
                        )
                     </div>
                 </div>
-
+                <legend>@Messages("business.seats.rows")<i id="addRow" class="icon-plus-sign"></i></legend>
+                
                 <div class="row-fluid">
-                    <div class="span12">
+                    <div id="rowsContainer" class="container-fluid">
                         @repeat(sectorForm("rowsSeats"), min = 1) { rangeForm =>
-                            @inputText(rangeForm("rowsRanges"))
-                            @inputText(rangeForm("seats"))
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    @inputText(rangeForm("rowsRanges"), '_label -> Messages("business.seats.rows.range"))
+                                </div>
+                                <div class="span2">
+                                    @inputText(rangeForm("seats"), '_label -> Messages("buesiness.seats.number"))
+                                </div>
+                                <div class="span1"><i class="icon-remove-sign"></i></div>
+                            </div>
                         }
                     </div>
                 </div>
@@ -43,11 +52,63 @@
 
         </fieldset>
 
-<div class="actions">
-    <input type="submit" class="btn btn-primary" value="Insert">
-    <a href="@routes.EventTypeController.update(1)" class="btn">Cancel</a>
-</div>
-
+		<div class="actions">
+		    <input type="submit" class="btn btn-primary" value="Insert">
+		    <a href="@routes.EventTypeController.update(1)" class="btn">Cancel</a>
+		</div>
+		
+        <div id="emptyRow" class="row-fluid hidden" >
+            <div class="span4">
+				<div class="clearfix">
+				    <label >Zakres rzędów</label>
+				    <div class="input">
+				    <input type="text" id="rowsSeats_0__rowsRanges" name="rowsSeats[].rowsRanges" value="">
+				        <span class="help-inline"></span>
+				        <span class="help-block"></span> 
+				    </div>
+				</div>
+            </div>
+            <div class="span2">
+				<div class="clearfix">
+				    <label>Liczba miejsc</label>
+				    <div class="input">
+				    <input type="text" name="rowsSeats[].seats" value="">
+				        <span class="help-inline"></span>
+				        <span class="help-block"></span> 
+				    </div>
+				</div>
+            </div>
+            <div class="span1"><i class="icon-remove-sign"></i></div>
+        </div>		
     }
 
-    }
+    <script type="text/javascript">
+    var index = @sectorForm("rowsSeats").indexes.size;
+    $(document).ready(function() {
+        $('.icon-remove-sign').click(function() {
+            $(this).closest('.row-fluid').remove();
+        });
+
+    	$('#addRow').click(function() {
+    		var row = $('#emptyRow').clone();
+    		row.removeClass('hidden').appendTo('#rowsContainer');
+    		
+    		var rowRangesId = 'rowsSeats_' + index + '__rowsRanges';
+    		row.find('label').first().attr('for', rowRangesId);
+    		row.find('input').first().attr('id', rowRangesId);
+    		row.find('input').first().attr('name', 'rowsSeats[' + index + '].rowsRanges');
+
+            var rowSeatsId = 'rowsSeats_' + index + '__seats';
+    		row.find('label').last().attr('for', rowSeatsId);
+    		row.find('input').last().attr('id', rowSeatsId);
+    		row.find('input').last().attr('name', 'rowsSeats[' + index + '].seats');
+
+            row.find('.icon-remove-sign').first().click(function() {
+                $(this).closest('.row-fluid').remove();
+            });
+
+    	    index++;
+    	});
+    });
+    </script>
+}

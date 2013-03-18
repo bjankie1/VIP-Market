@@ -76,6 +76,14 @@ object BusinessSector {
 
 
   // ~updates
+  
+  def insertOrUpdate(sector: BusinessSector) = {
+    update(sector) match {
+      case 0 => {insert(sector); true}
+      case 1 => true
+      case _ => throw new Exception("Invalid number of updated rows")
+    }
+  }
 
   def insert(sector: BusinessSector) = {
     Logger.debug(s"Storing sector ${sector.id} for ${sector.venueId}")
@@ -90,7 +98,7 @@ object BusinessSector {
         'id -> sector.id,
         'venueId -> sector.venueId,
         'rowScheme -> sector.rowScheme.toString
-      ).executeInsert()
+      ).executeInsert(scalar[String].singleOpt)
     }
   }
 
@@ -144,6 +152,15 @@ object BusinessSectorRow {
   }
 
   // ~updates
+  
+  
+  def insertOrUpdate(sectorRow: BusinessSectorRow) = {
+    update(sectorRow) match {
+      case 0 => { insert(sectorRow); true}
+      case 1 => true
+      case _ => throw new Exception("Ivalid number of updated rows")
+    }
+  }
 
   def update(row: BusinessSectorRow) = {
     Logger.debug(s"Updating business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
@@ -159,12 +176,12 @@ object BusinessSectorRow {
         'venueId -> row.venueId,
         'row -> row.row,
         'seats -> row.seats
-      ).executeInsert()
+      ).executeUpdate
     }
   }
 
-  def insert(row: BusinessSectorRow) = {
-    Logger.debug(s"Inserting business sector row ${row.row} of ${row.sectorId} in ${row.venueId}")
+  def insert(row: BusinessSectorRow): Unit = {
+    Logger.debug(s"Inserting row ${row.row} to sector ${row.sectorId} in venue ${row.venueId}")
     val sql =
       """
         |insert into business_sector_row(sector_id, venue_id, row, seats)
@@ -173,13 +190,12 @@ object BusinessSectorRow {
     Logger("sql").debug(sql)
     DB.withConnection { implicit connection =>
       SQL(sql).on(
-        'sectorId -> row.sectorId,
-        'venueId -> row.venueId,
-        'row -> row.row,
-        'seats -> row.seats
-      ).executeInsert()
+	    'sectorId  -> row.sectorId,
+        'venueId   -> row.venueId,
+        'row       -> row.row,
+        'seats     -> row.seats
+      ).executeInsert(scalar[String].singleOpt)
     }
-
   }
 
 }

@@ -7,16 +7,18 @@ import anorm.SqlParser._
 import play.api.Logger
 
 case class EventType(
-    id: Pk[Long],
+    id: Pk[Int],
     name: String)
 
 object EventType {
 
+  val TABLE_NAME = "event_type"
+
   // ~parsers
 
   def simple: RowParser[EventType] = {
-    get[Pk[Long]]("event_type.id") ~
-    str("event_type.name") map {
+    get[Pk[Int]](s"$TABLE_NAME.id") ~
+    str(s"$TABLE_NAME.name") map {
       case id ~ name => EventType(id, name)
     }
   }
@@ -24,10 +26,10 @@ object EventType {
   // ~queries
 
   def findById(id: Long) = {
-    Logger.debug(s"finding EventType ${id}")
+    Logger.debug(s"finding EventType $id")
     val sql =
-      """
-        |select * from event_type where id = {id}
+      s"""
+        |select * from $TABLE_NAME where id = {id}
       """.stripMargin
     Logger("sql").debug(sql)
     DB.withConnection(implicit connection =>
@@ -40,8 +42,8 @@ object EventType {
   def findAll: List[EventType] = {
     Logger.debug("Loading all event types")
     val sql =
-      """
-        |select * from event_type order by name
+      s"""
+        |select * from $TABLE_NAME order by name
       """.stripMargin
     Logger("sql").debug(sql)
     DB.withConnection {
@@ -55,8 +57,8 @@ object EventType {
   def insert( et: EventType) = {
     Logger.debug(s"Inserting new event type ${et.name}")
     val sql =
-      """
-        |insert into event_type(name)
+      s"""
+        |insert into $TABLE_NAME(name)
         |values({name})
       """.stripMargin
     Logger("sql").debug(sql)
@@ -72,8 +74,8 @@ object EventType {
   def update(id: Long, et: EventType) = {
     Logger.debug(s"Updating event type ${id}")
     val sql =
-      """
-        |update event_type
+      s"""
+        |update $TABLE_NAME
         |set name = {name}
         |where id = {id}
       """.stripMargin

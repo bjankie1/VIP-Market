@@ -21,7 +21,7 @@ object EventTypeController extends BaseController {
 
   val eventTypeForm: Form[EventType] = Form(
     mapping(
-      "id" -> ignored(NotAssigned: Pk[Long]),
+      "id" -> ignored(NotAssigned: Pk[Int]),
       "name" -> nonEmptyText
     )(EventType.apply)(EventType.unapply)
   )

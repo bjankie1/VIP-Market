@@ -1,0 +1,24 @@
+@(users: Seq[models.Account])(implicit flash: Flash)
+ 
+@admin.main("user.plural")(Messages("user.list")) {
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<td>@Messages("user.name")</td>
+                <td>@Messages("email")</td>
+				<td>@Messages("actions")</td>
+			</tr>
+		</thead>
+	@users.map { user =>
+		<tr>
+			<td>@user.name</td>
+            <td>@user.email</td>
+			<td>
+				<div class="btn-group">
+					<a class="btn btn-mini" href="#">@Messages("activate")</a>
+				</div>
+			</td>
+		</tr>
+	}
+	</table>
+}

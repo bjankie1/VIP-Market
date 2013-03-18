@@ -1,11 +1,11 @@
 # General
 actions=Akcje
 activate=Włącz
+disactivate=Wyłącz
 active=Aktywny
 city=Miasto
 country=Państwo
 description=Opis
-disactivate=Wyłącz
 edit=Edycja
 format.boolean=Zaznacz
 general.information=Informacje podstawowe
@@ -17,7 +17,6 @@ signup=Rejestracja
 not.found=Nie znaleziono
 error=Błąd
 warning=Uwaga
-rules.agreement=Zgoda na regulamin
 date=Data
 photos=Zdjęcia
 
@@ -75,8 +74,13 @@ business.class.seats=Business club
 business.class.seats.range.invalid=Nieprawidłowy opis
 business.class.seats.rows.scheme=Schemat numeracji rzędów
 business.class.seats.seats.scheme=Schemat numeracji krzeseł
+business.seats.rows=Dostępne rzędy
+business.seats.rows.range=Zakres rzędów
+buesiness.seats.number=Liczba miejsc
+business.seats.invalid.scheme=Nieprawidłowy schemat oznaczania miejsc
 
 #Users
+user.plural=Użytkownicy
 user.name=Imię i nazwisko
 user.password=Hasło
 user.password.repeat=Powtórz hasło
