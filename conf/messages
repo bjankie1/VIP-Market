@@ -6,7 +6,7 @@ active=Aktywny
 city=Miasto
 country=Państwo
 description=Opis
-edit=Edycja
+edit=Zmień
 format.boolean=Zaznacz
 general.information=Informacje podstawowe
 name=Nazwa
@@ -70,6 +70,10 @@ vip.lounge.add=Dodaj lożę
 vip.lounge.base.price=Cena podstawowa
 
 #Business class
+business.seats=Miejsca w klubie business
+business.seats.sector=Sektor
+business.seats.sector.add=Sektor
+business.seats.rows.count=Liczba rzędów
 business.class.seats=Business club
 business.class.seats.range.invalid=Nieprawidłowy opis
 business.class.seats.rows.scheme=Schemat numeracji rzędów

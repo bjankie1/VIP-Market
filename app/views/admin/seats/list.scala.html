@@ -1,0 +1,30 @@
+@(venueId: Long, sectors: Seq[models.BusinessSector])(implicit flash: Flash)
+
+@admin.main(Messages("business.seats"))(Messages("business.seats")) {
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>@Messages("business.seats.sector")</td>
+                <td>@Messages("business.seats.rows.count")</td>
+                <td>@Messages("business.class.seats.rows.scheme")</td>
+                <td>@Messages("actions")</td>
+            </tr>
+        </thead>
+    @sectors.map { sector =>
+        <tr>
+            <td><a href="@routes.BusinessSeatController.edit(venueId, sector.id)">@sector.id</a></td>
+            <td>1</td>
+            <td>@sector.rowScheme</td>
+            <td>
+                <div class="btn-group">
+                    <a class="btn btn-mini" href="@routes.BusinessSeatController.edit(sector.venueId, sector.id)">@Messages("edit")</a>
+                </div>
+            </td>
+        </tr>
+    }
+    </table>
+
+    <div class="actions">
+        <a href="#" class="btn btn-primary">@Messages("business.seats.sector.add")</a>
+    </div>
+}

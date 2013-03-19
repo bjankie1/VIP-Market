@@ -21,6 +21,7 @@
 				<div class="btn-group">
 					<a class="btn btn-mini" href="@routes.VipLoungeController.create(venue.id.get)">@Messages("vip.lounge.create")</a>
 					<a class="btn btn-mini" href="@routes.VipLoungeController.list(venue.id.get)">@Messages("vip.lounge.list")</a>
+					<a class="btn btn-mini" href="@routes.BusinessSeatController.sectors(venue.id.get)">@Messages("business.seats")</a>
 					<a class="btn btn-mini" data-toggle="modal" href="@routes.VenueController.preview(venue.id.get)" data-target="#venuePreviewModal">@Messages("preview")</a>
 				</div>
 			</td>

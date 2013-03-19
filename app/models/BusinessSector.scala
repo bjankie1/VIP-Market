@@ -12,7 +12,7 @@ import play.api.Logger
  * Date: 3/1/13
  * Time: 7:44 PM
  */
-case class BusinessSector(id: String, venueId: Int, rowScheme: DisplayScheme.DisplayScheme)
+case class BusinessSector(id: String, venueId: Long, rowScheme: DisplayScheme.DisplayScheme)
 
 object DisplayScheme extends Enumeration {
 
@@ -21,14 +21,14 @@ object DisplayScheme extends Enumeration {
   val Numeric, Letter, Roman = Value
 }
 
-case class BusinessSectorRow( sectorId: String, venueId: Int, row: Int, seats: Int)
+case class BusinessSectorRow( sectorId: String, venueId: Long, row: Int, seats: Int)
 
 object BusinessSector {
 
   // ~parser
   def simple: RowParser[BusinessSector] = {
     str("business_sector.id") ~
-    int("business_sector.venue_id") ~
+    long("business_sector.venue_id") ~
     str("business_sector.row_scheme") map {
       case id ~ venueId ~ displayScheme => BusinessSector(id, venueId, DisplayScheme.withName(displayScheme))
     }
@@ -126,7 +126,7 @@ object BusinessSectorRow {
   // ~parser
   def simple = {
     getAliased[String]("ROW_SECTOR_ID") ~
-    getAliased[Int]("ROW_VENUE_ID") ~
+    getAliased[Long]("ROW_VENUE_ID") ~
     getAliased[Int]("ROW_ROW") ~
     getAliased[Int]("ROW_SEATS") map {
       case sectorId ~ venueId ~ row ~ seats => BusinessSectorRow(sectorId, venueId, row, seats)
@@ -135,7 +135,7 @@ object BusinessSectorRow {
 
   // ~queries
 
-  def findForVenueAndSector(venueId: Int, sector: String) = {
+  def findForVenueAndSector(venueId: Long, sector: String) = {
     Logger.debug(s"Loading rows for $sector in $venueId")
     val sql =
       """

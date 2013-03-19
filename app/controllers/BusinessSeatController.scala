@@ -27,10 +27,10 @@ object BusinessSeatController extends BaseController {
     /**
      * Convert this view object to models object
      */
-    def toBusinessSector(id: String, venueId: Int) = 
+    def toBusinessSector(id: String, venueId: Long) = 
       BusinessSector(id, venueId, DisplayScheme.withName(rowScheme))
       
-    def sectorRows(id: String, venueId: Int): Seq[BusinessSectorRow] = {
+    def sectorRows(id: String, venueId: Long): Seq[BusinessSectorRow] = {
       rowsSeats.map( row => 
         parseRange(row.rowsRanges.split(",")).map(
           BusinessSectorRow(id, venueId, _, row.seats))
@@ -96,8 +96,13 @@ object BusinessSeatController extends BaseController {
       )(RowsRangeSeats.apply)(RowsRangeSeats.unapply))
     )(Sector.apply)(Sector.unapply)
   )
+  
+  def sectors(venueId: Long) = authorizedAction(authorizeAdmin) { user => implicit request =>
+    Logger.info(s"Displaying sectors for $venueId")
+    Ok(views.html.admin.seats.list(venueId, BusinessSector.findForVenue(venueId)))
+  }
 
-  def edit(venueId: Int, sectorId: String) = authorizedAction(authorizeAdmin) {
+  def edit(venueId: Long, sectorId: String) = authorizedAction(authorizeAdmin) {
     user => implicit request =>
       Logger.info(s"Editing sector $sectorId for venue $venueId")
       val businessSector = BusinessSector.findSector(venueId, sectorId)
@@ -114,7 +119,7 @@ object BusinessSeatController extends BaseController {
       Ok(views.html.admin.seats.form(venueId, sectorId, form.fill(viewSector)))
   }
 
-  def update(venueId: Int, sectorId: String) = authorizedAction(authorizeAdmin) {
+  def update(venueId: Long, sectorId: String) = authorizedAction(authorizeAdmin) {
     user => implicit request =>
       form.bindFromRequest.fold(
           errors => {

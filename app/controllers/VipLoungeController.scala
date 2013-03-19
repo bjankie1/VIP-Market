@@ -114,8 +114,8 @@ object VipLoungeController extends BaseController {
           }
         }
         request.upload(s"vipLounge:${updatedId}")
-        Logger.debug(s"Uploaded pictures for VIP lounge ${updatedId}")
-      	Redirect(routes.VipLoungeController.list(vipLounge.venueId)).flashing("message" -> Messages("success", vipLounge.name))
+        Logger.debug(s"Uploaded pictures for VIP lounge $updatedId")
+      	Redirect(routes.VipLoungeController.list(vipLounge.venueId.intValue)).flashing("message" -> Messages("success", vipLounge.name))
       }
 	)
     

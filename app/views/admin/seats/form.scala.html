@@ -1,10 +1,13 @@
-@(venueId: Int, sector: String, sectorForm: Form[controllers.BusinessSeatController.Sector])(implicit flash: Flash)
+@(venueId: Long, sector: String, sectorForm: Form[controllers.BusinessSeatController.Sector])(implicit flash: Flash)
 
 @import helper._
 @import helper.twitterBootstrap._
 
 @admin.main("business.class.seats")("business.class.seats") {
-
+    <ul class="breadcrumb">
+        <li> <a href="@routes.BusinessSeatController.sectors(venueId)">@Messages("business.seats")</a> <span class="divider"> / </span> </li>
+        <li class="active">@sector</li>
+    </ul>
     @admin.tags.validationmessage(sectorForm.errors)
 
     @helper.form(action = routes.BusinessSeatController.update(venueId, sector)) {
