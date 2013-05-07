@@ -6,6 +6,8 @@ import play.api.data.Forms._
 import play.api.mvc._
 import models.Account
 import jp.t2v.lab.play20.auth.{LoginLogout, Auth}
+import java.io.StringReader
+import com.monochromeroad.play.xwiki.rendering.plugin.{DefaultXWikiRenderer => Renderer}
 
 object Application extends Controller with LoginLogout with Auth with AuthConfigImpl {
 
@@ -52,4 +54,9 @@ object Application extends Controller with LoginLogout with Auth with AuthConfig
     )
   }
 
+  def wiki = Action {
+    val sourceReader = new StringReader("**TEST** //italic//")
+    val htmlText = Renderer.render(sourceReader)
+    Ok(htmlText)
+  }
 }

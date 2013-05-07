@@ -3,6 +3,7 @@ package controllers
 import models.{BusinessSectorRow, DisplayScheme, BusinessSector, BusinessSeat}
 import play.api.data.Forms._
 import play.api._
+import play.api.mvc._
 import play.api.data._
 import utils.Collections._
 
@@ -135,5 +136,18 @@ object BusinessSeatController extends BaseController {
             Redirect(routes.VenueController.list)
           })
   }
+  
+  
+  def javascriptRoutes = Action { implicit request =>
+
+    import play.api.Routes
+
+    // apiRoutes is the name of the router in
+    // the global javascript scope
+    Ok(Routes.javascriptRouter("apiRoutes")(
+      routes.javascript.BusinessSeatController.edit
+    )).as(JAVASCRIPT)
+  }
+  
 
 }

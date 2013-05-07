@@ -51,6 +51,7 @@ GET     /admin/venue/new                  controllers.VenueController.create
 POST    /admin/venue/update/:id           controllers.VenueController.update(id: Long)
 
 GET    /admin/wiki                        controllers.VenueController.wiki
+GET    /admin/wiki1                       controllers.Application.wiki
 
 # VipLounge
 GET     /admin/viplounge/list/:venueId    controllers.VipLoungeController.list(venueId: Long)
@@ -60,9 +61,18 @@ POST    /admin/viplounge/:id              controllers.VipLoungeController.update
 GET     /admin/viplounge/activate/:id     controllers.VipLoungeController.activate(id: Long)
 GET     /admin/viplounge/disactivate/:id  controllers.VipLoungeController.disactivate(id: Long)
 
+# Business seats
 GET     /admin/seats/edit/:venueId/:sectorId    controllers.BusinessSeatController.edit(venueId: Long, sectorId: String)
 POST    /admin/seats/update/:venueId/:sectorId  controllers.BusinessSeatController.update(venueId: Long, sectorId: String)
 GET     /admin/seats/list/:venueId              controllers.BusinessSeatController.sectors(venueId: Long)
+GET     /admin/seats/javascriptroutes           controllers.BusinessSeatController.javascriptRoutes
+
+# Booking
+GET     /order/lounge/:eventId/:loungeId  controllers.BookingController.orderLounge(eventId: Long, loungeId: Long)
+GET     /order/seats/:eventId/:sectorId   controllers.BookingController.orderSeats(eventId: Long, sectorId: String)
+GET     /order/confirm/:orderId           controllers.BookingController.confirmOrder(orderId: Long)
+GET     /order/cancel/:orderId            controllers.BookingController.cancelOrder(orderId: Long)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

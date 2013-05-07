@@ -82,6 +82,7 @@ business.seats.rows=Dostępne rzędy
 business.seats.rows.range=Zakres rzędów
 buesiness.seats.number=Liczba miejsc
 business.seats.invalid.scheme=Nieprawidłowy schemat oznaczania miejsc
+business.seats.sector.missing=Musisz podać nazwę sektora!
 
 #Users
 user.plural=Użytkownicy

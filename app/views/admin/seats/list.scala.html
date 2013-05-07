@@ -1,6 +1,10 @@
 @(venueId: Long, sectors: Seq[models.BusinessSector])(implicit flash: Flash)
 
-@admin.main(Messages("business.seats"))(Messages("business.seats")) {
+@scripts = {
+    <script src="@routes.BusinessSeatController.javascriptRoutes" type="text/javascript"></script>
+}
+
+@admin.main(Messages("business.seats"), scripts)(Messages("business.seats")) {
     <table class="table table-hover">
         <thead>
             <tr>
@@ -24,7 +28,21 @@
     }
     </table>
 
+
     <div class="actions">
-        <a href="#" class="btn btn-primary">@Messages("business.seats.sector.add")</a>
+        <input id="new_sector">
+        <a href="#" onclick="return addSector()" class="btn btn-primary">@Messages("business.seats.sector.add")</a>
     </div>
+    
+<script type="text/javascript">
+    function addSector() {
+        var sectorId = $('#new_sector').val();
+        if(sectorId) {
+        	window.location=apiRoutes.controllers.BusinessSeatController.edit(@venueId, sectorId).absoluteURL();
+        } else {
+        	bootstrapAlert.error('@Messages("business.seats.sector.missing")');
+        }
+        return false;
+    }
+</script>
 }
